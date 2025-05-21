@@ -43,14 +43,6 @@ Style/Documentation:
   Exclude:
     - "config/application.rb"
 
-RSpec/SpecFilePathFormat:
-  Exclude:
-    - spec/modules/**/*.rb
-
-RSpec/FilePath:
-  Exclude:
-    - spec/modules/**/*.rb
-
 RSpec/MultipleMemoizedHelpers:
   Exclude:
     - spec/requests/**/*.rb
