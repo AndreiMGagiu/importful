@@ -60,7 +60,7 @@ group :development, :test do
   gem "rspec-github", require: false
 
   gem "factory_bot_rails"
-  gem "shoulda-matchers", "~> 6.0"
+  gem "shoulda-matchers", "~> 6.5"
   gem "faker"
 end
 
