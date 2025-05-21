@@ -1,8 +1,56 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+AllCops:
+  NewCops: enable
+  Exclude:
+    - "db/**/*"
+    - "script/**/*"
+    - "bin/*"
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+require:
+  - rubocop-factory_bot
+  - rubocop-rspec_rails
+  - rubocop-rspec
+  - rubocop-thread_safety
+
+plugins:
+  - rubocop-performance
+  - rubocop-rails
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/ArrayAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+RSpec/NestedGroups:
+  Max: 4
+  Include:
+    - spec/requests/*.rb
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: error
+
+Metrics/BlockLength:
+  Exclude:
+    - "config/**/*"
+
+Style/Documentation:
+  Exclude:
+    - "config/application.rb"
+
+RSpec/SpecFilePathFormat:
+  Exclude:
+    - spec/modules/**/*.rb
+
+RSpec/FilePath:
+  Exclude:
+    - spec/modules/**/*.rb
+
+RSpec/MultipleMemoizedHelpers:
+  Exclude:
+    - spec/requests/**/*.rb

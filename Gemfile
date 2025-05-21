@@ -50,14 +50,20 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
+  gem 'pry', '~> 0.15.0'
+  
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-
+  gem "rubocop-factory_bot", "~> 2.25", require: false
+  gem 'rubocop-performance', '~> 1.25', require: false
+  gem "rubocop-rails", "~> 2.32", require: false
+  gem "rubocop-rspec", "~> 2.24", require: false
   gem "rspec-rails", "~> 7.1.0"
   gem "rspec-github", require: false
+  gem "rubocop-thread_safety", "~> 0.5.1", require: false
 
   gem "factory_bot_rails"
   gem "shoulda-matchers", "~> 6.0"
