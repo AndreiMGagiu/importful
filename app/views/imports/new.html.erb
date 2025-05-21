@@ -1,0 +1,12 @@
+<h1><%= image_tag "logo.svg" %></h1>
+
+<%= form_with(url: imports_path, local: true, method: :post, html: { multipart: true }) do |form| %>
+  <fieldset class="field">
+    <%= form.label :file %>
+    <%= form.file_field :file, accept: '.csv' %>
+  </fieldset>
+
+  <div class="actions">
+    <%= form.submit "Upload and Import" %>
+  </div>
+<% end %>
