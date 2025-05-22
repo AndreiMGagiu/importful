@@ -1,0 +1,3 @@
+merchant_slug,first_name,last_name,email,website_url,commissions_total
+test-merchant,John,Doe,john@example.com,www.example.com,123.45
+test-merchant,Jane,Smith,jane@foo.com,,789.12
