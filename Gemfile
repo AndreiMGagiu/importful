@@ -30,8 +30,6 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
-gem 'dotenv', '~> 3.1', '>= 3.1.7'
-
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -53,6 +51,8 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
   gem 'pry', '~> 0.15.0'
+
+  gem 'dotenv', '~> 3.1', '>= 3.1.7'
   
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
