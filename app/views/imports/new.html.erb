@@ -1,12 +1,190 @@
-<h1><%= image_tag "logo.svg" %></h1>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+          <!-- Header with logo -->
+          <div class="text-center mb-4">
+            <%= image_tag "logo.svg", alt: "Importful Logo", class: "img-fluid mb-3", style: "max-height: 60px;" %>
+            <h1 class="h3 fw-bold text-primary">Affiliate Data Import</h1>
+            <p class="text-muted">Upload your CSV file to import affiliate data</p>
+          </div>
 
-<%= form_with(url: imports_path, local: true, method: :post, html: { multipart: true }) do |form| %>
-  <fieldset class="field">
-    <%= form.label :file %>
-    <%= form.file_field :file, accept: '.csv' %>
-  </fieldset>
+          <!-- File upload card -->
+          <div class="card bg-light border-0 mb-4">
+            <div class="card-body p-4" data-controller="imports">
+              <%= form_with(url: imports_path, method: :post, multipart: true, data: { imports_target: "form", action: "submit->imports#submitForm" }, local: false) do |form| %>
+              <div class="mb-4 text-center">
+                <div class="upload-area p-5 border-2 border-dashed rounded-3 position-relative" data-imports-target="dropArea">
+                  <i class="bi bi-cloud-arrow-up display-4 text-primary mb-3"></i>
+                  <h5 class="fw-bold">Drag and drop your CSV file here</h5>
+                  <p class="text-muted small mb-3">or</p>
 
-  <div class="actions">
-    <%= form.submit "Upload and Import" %>
+                  <div class="position-relative d-inline-block">
+                    <button type="button" class="btn btn-primary px-4 py-2">
+                      <i class="bi bi-file-earmark-spreadsheet me-2"></i>Select CSV File
+                    </button>
+                    <%= form.file_field :file,
+                           accept: '.csv',
+                           class: "position-absolute top-0 start-0 opacity-0 w-100 h-100",
+                           style: "cursor: pointer;",
+                           data: {
+                             imports_target: "fileInput",
+                             action: "change->imports#fileSelected"
+                           },
+                           tabindex: -1 %>
+                  </div>
+
+                  <p class="text-muted small mt-3 mb-0">
+                    Supports CSV files of any size, including large datasets
+                  </p>
+                </div>
+              </div>
+
+              <!-- File details section (hidden initially) -->
+              <div class="file-details d-none mb-4" data-imports-target="fileDetails">
+                <div class="d-flex align-items-center p-3 bg-white rounded-3 border">
+                  <i class="bi bi-file-earmark-spreadsheet fs-4 text-primary me-3"></i>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-0" data-imports-target="fileName">filename.csv</h6>
+                    <span class="text-muted small" data-imports-target="fileSize">0 KB</span>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-outline-danger" data-action="click->imports#removeFile">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- CSV Format Guide -->
+              <div class="mb-4">
+                <div class="accordion" id="csvGuideAccordion">
+                  <div class="accordion-item border-0 bg-light">
+                    <h2 class="accordion-header" id="headingOne">
+                      <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <i class="bi bi-info-circle me-2 text-primary"></i> CSV Format Guide
+                      </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#csvGuideAccordion">
+                      <div class="accordion-body">
+                        <p class="small mb-2">Your CSV file should include the following columns:</p>
+                        <ul class="small text-muted mb-3">
+                          <li><strong>merchant_slug</strong> - External identifier for the merchant</li>
+                          <li><strong>first_name</strong> - Affiliate's first name</li>
+                          <li><strong>last_name</strong> - Affiliate's last name</li>
+                          <li><strong>email</strong> - Affiliate's email address (unique per merchant)</li>
+                          <li><strong>website_url</strong> - Affiliate's website (optional)</li>
+                          <li><strong>commissions_total</strong> - Total commissions earned (optional)</li>
+                        </ul>
+                        <div class="bg-white p-2 rounded border small">
+                          <code>merchant_slug,first_name,last_name,email,website_url,commissions_total</code><br>
+                          <code>acme-store,John,Doe,john@example.com,example.com,1250.50</code>
+                        </div>
+                        <p class="small mt-3 mb-0 text-muted">
+                          <i class="bi bi-info-circle-fill me-1"></i> Our importer handles various CSV formats and inconsistencies, including:
+                        </p>
+                        <ul class="small text-muted mt-2 mb-0">
+                          <li>Different delimiters (commas, tabs, semicolons)</li>
+                          <li>Leading/trailing spaces</li>
+                          <li>Varied number formats (1,000.00 or 1.000,00)</li>
+                          <li>URLs with or without protocols</li>
+                          <li>Inconsistent capitalization</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Upload progress (hidden initially) -->
+              <div class="upload-progress d-none mb-4" data-imports-target="uploadProgress">
+                <label class="form-label small fw-medium d-flex justify-content-between">
+                  <span>Uploading...</span>
+                  <span data-imports-target="progressPercentage">0%</span>
+                </label>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" data-imports-target="progressBar"></div>
+                </div>
+              </div>
+
+              <!-- Processing status (hidden initially) -->
+              <div class="processing-status d-none mb-4" data-imports-target="processingStatus">
+                <div class="d-flex align-items-center p-3 bg-light rounded-3 border">
+                  <div class="spinner-border spinner-border-sm text-primary me-3" role="status">
+                    <span class="visually-hidden">Processing...</span>
+                  </div>
+                  <div>
+                    <h6 class="mb-0">Processing your data</h6>
+                    <p class="text-muted small mb-0">Large files may take several minutes to process</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Error alert (hidden initially) -->
+              <div class="alert alert-danger d-none mb-4" role="alert" data-imports-target="errorAlert">
+                <div class="d-flex">
+                  <i class="bi bi-exclamation-triangle-fill fs-5 me-2"></i>
+                  <div>
+                    <h6 class="alert-heading mb-1">Import Error</h6>
+                    <p class="mb-0" data-imports-target="errorMessage">There was an error processing your file.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Submit button -->
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary px-4 py-2" disabled data-imports-target="submitButton">
+                  <i class="bi bi-cloud-upload me-2"></i>Upload and Import
+                </button>
+              </div>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Help section -->
+          <div class="text-center">
+            <p class="text-muted small mb-0">
+              Need help? <a href="#" class="text-decoration-none">View our import guide</a> or
+              <a href="#" class="text-decoration-none">contact support</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-<% end %>
+</div>
+
+<!-- Success modal (hidden initially) -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-5">
+        <div class="mb-4">
+          <i class="bi bi-check-circle-fill text-success display-1"></i>
+        </div>
+        <h3 class="modal-title fw-bold mb-3" id="successModalLabel">Import Successful!</h3>
+        <p class="text-muted mb-4">Your affiliate data has been successfully imported.</p>
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="card bg-light border-0">
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Total records processed:</span>
+                  <span class="fw-bold" id="total-records">0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-muted">Records imported:</span>
+                  <span class="fw-bold" id="imported-records">0</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span class="text-muted">Duplicates skipped:</span>
+                  <span class="fw-bold" id="duplicates-skipped">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-success btn-lg mt-3" data-bs-dismiss="modal" aria-label="Close">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
