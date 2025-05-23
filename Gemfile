@@ -33,6 +33,9 @@ gem "solid_cable"
 # Storage
 gem 'aws-sdk-s3', '~> 1.186', '>= 1.186.1'
 
+# Background jobs
+gem 'sidekiq', '~> 7.1', '>= 7.1.2'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
