@@ -23,7 +23,7 @@ class ImportsController < ApplicationController
   #
   # @return [Hash] Hash containing the S3 direct_upload URL and the key
   def signed_url
-    Affiliates::GenerateSignedUrl.new(
+    Affiliates::GeneratePresignedUrl.new(
       filename: params[:filename],
       content_type: params[:content_type]
     ).call
