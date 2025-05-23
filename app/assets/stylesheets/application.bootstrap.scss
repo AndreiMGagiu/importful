@@ -1,2 +1,181 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons";
+
+@keyframes bellRing {
+  0% {
+    transform: rotate(0);
+  }
+  10% {
+    transform: rotate(15deg);
+  }
+  20% {
+    transform: rotate(-15deg);
+  }
+  30% {
+    transform: rotate(10deg);
+  }
+  40% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  60% {
+    transform: rotate(-5deg);
+  }
+  70% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(0);
+  }
+}
+
+.bell-animation {
+  animation: bellRing 1s ease;
+  transform-origin: top center;
+}
+
+/* Notification styling */
+.notification-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+/* Badge styling */
+.badge {
+  transition: all 0.3s ease;
+}
+
+/* Enhanced Upload Area Styling */
+.upload-area {
+  transition: all 0.3s ease;
+  border-color: #dee2e6;
+}
+
+.upload-area:hover,
+.upload-area.border-primary {
+  border-color: var(--bs-primary) !important;
+  background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
+}
+
+.upload-icon-container {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover .upload-icon-container {
+  transform: translateY(-5px);
+}
+
+/* Button Enhancements */
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  box-shadow: 0 4px 6px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(var(--bs-primary-rgb), 0.25);
+}
+
+.btn-success {
+  box-shadow: 0 4px 6px rgba(var(--bs-success-rgb), 0.2);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(var(--bs-success-rgb), 0.25);
+}
+
+/* Card Enhancements */
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Accordion Enhancements */
+.accordion-button:not(.collapsed) {
+  background-color: rgba(var(--bs-primary-rgb), 0.05);
+  color: var(--bs-primary);
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Progress Bar Enhancements */
+.progress {
+  overflow: hidden;
+  background-color: #f0f0f0;
+  border-radius: 1rem;
+}
+
+/* Modal Animations */
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease-out;
+  transform: scale(0.95);
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
+}
+
+/* Notification Badge Animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.badge {
+  animation: pulse 2s infinite;
+}
+
+/* General Enhancements */
+.rounded-4 {
+  border-radius: 0.75rem !important;
+}
+
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .btn-lg {
+    padding: 0.5rem 1.5rem !important;
+    font-size: 1rem !important;
+  }
+
+  .display-3 {
+    font-size: 3rem !important;
+  }
+
+  .display-4 {
+    font-size: 2.5rem !important;
+  }
+}
