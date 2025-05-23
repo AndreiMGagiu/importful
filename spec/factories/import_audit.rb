@@ -6,7 +6,6 @@ FactoryBot.define do
     filename    { Faker::File.file_name(ext: 'csv') }
     status      { ImportAudit::VALID_STATUSES.sample }
     import_type { ImportAudit::VALID_IMPORT_TYPES.sample }
-    row_count   { 10 }
     total_successful_rows { 8 }
     total_failed_rows     { 2 }
     error_message         { [nil, Faker::Lorem.sentence(word_count: 10)].sample }

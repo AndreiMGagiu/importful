@@ -5,7 +5,6 @@ class CreateImportAudits < ActiveRecord::Migration[8.0]
       t.string  :filename
       t.string  :status, null: false, default: 'pending'
       t.string  :import_type, null: false
-      t.integer :row_count
       t.integer :total_successful_rows
       t.integer :total_failed_rows
       t.text    :error_message

@@ -57,7 +57,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_144611) do
     t.string "filename"
     t.string "status", default: "pending", null: false
     t.string "import_type", null: false
-    t.integer "row_count"
     t.integer "total_successful_rows"
     t.integer "total_failed_rows"
     t.text "error_message"
@@ -67,7 +66,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_22_144611) do
   end
 
   create_table "merchants", force: :cascade do |t|
-    t.string "slug"
+    t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_merchants_on_slug", unique: true

@@ -29,14 +29,6 @@ RSpec.describe ImportAudit do
     it { is_expected.not_to allow_value('invalid_type').for(:import_type) }
   end
 
-  describe '#row_count' do
-    it 'can be nil or any integer' do
-      expect(build(:import_audit, row_count: nil)).to be_valid
-      expect(build(:import_audit, row_count: 0)).to be_valid
-      expect(build(:import_audit, row_count: 123)).to be_valid
-    end
-  end
-
   describe '#total_successful_rows' do
     it 'can be nil or any integer' do
       expect(build(:import_audit, total_successful_rows: nil)).to be_valid
