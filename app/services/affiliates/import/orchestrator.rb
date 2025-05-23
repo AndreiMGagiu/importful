@@ -44,7 +44,7 @@ module Affiliates
       # @return [void]
       def process_rows(rows)
         rows.each_with_index do |raw_row, index|
-          RowImportWorker.perform_async(
+          RowImportJob.perform_async(
             raw_row.to_h.transform_keys(&:to_s),
             index + 2,
             audit.id
