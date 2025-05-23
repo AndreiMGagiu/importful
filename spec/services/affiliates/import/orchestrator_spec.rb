@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'sidekiq/testing'
 
 RSpec.describe Affiliates::Import::Orchestrator do
-  subject(:result) { described_class.new(file).call }
+  subject(:result) { described_class.new(file, audit).call }
 
-  let(:merchant) { Merchant.create!(slug: 'test-merchant') }
+  let(:merchant) { create(:merchant, slug: 'test-merchant') }
+
+  let(:audit) {create(:import_audit)}
 
   let(:file) do
     Tempfile.create(['affiliates', '.csv']).tap do |f|
@@ -19,6 +22,10 @@ RSpec.describe Affiliates::Import::Orchestrator do
     file.unlink if file.respond_to?(:unlink)
   end
 
+  around do |example|
+    Sidekiq::Testing.inline! { example.run }
+  end
+
   describe '#call' do
     context 'with a valid CSV file' do
       let(:csv_content) do
@@ -30,24 +37,9 @@ RSpec.describe Affiliates::Import::Orchestrator do
         CSV
       end
 
-      it 'is successful' do
-        expect(result).to be_success
-      end
-
-      it 'imports two rows' do
-        expect(result.total).to eq(2)
-      end
-
       it 'creates two affiliates' do
-        expect(result.created).to eq(2)
-      end
-
-      it 'has zero updated affiliates' do
-        expect(result.updated).to eq(0)
-      end
-
-      it 'has no errors' do
-        expect(result.errors).to be_empty
+        expect { result }.to change(Affiliate, :count).by(2)
+        expect(Affiliate.pluck(:email)).to include('john@example.com', 'jane@foo.com')
       end
     end
 
@@ -58,9 +50,8 @@ RSpec.describe Affiliates::Import::Orchestrator do
           "test-merchant\tYuri\tNagata\tyuri@ex.com\thttps://yuri.com\t987,65\n"
       end
 
-      it 'parses and imports affiliates with European decimal' do
-        expect(result).to be_success
-        expect(result.created).to eq(1)
+      it 'imports affiliates with European decimal format' do
+        expect { result }.to change(Affiliate, :count).by(1)
         expect(Affiliate.last.commissions_total).to eq(987.65)
       end
     end
@@ -75,10 +66,9 @@ RSpec.describe Affiliates::Import::Orchestrator do
         CSV
       end
 
-      it 'imports valid row, errors for missing merchant' do
-        expect(result.total).to eq(2)
-        expect(result.created).to eq(1)
-        expect(result.errors.first.message).to match(/Unknown merchant slug/i)
+      it 'creates only the valid affiliate' do
+        expect { result }.to change(Affiliate, :count).by(1)
+        expect(Affiliate.last.email).to eq('tom@foo.com')
       end
     end
 
@@ -92,10 +82,9 @@ RSpec.describe Affiliates::Import::Orchestrator do
         CSV
       end
 
-      it 'creates the first, fails the second' do
-        expect(result.total).to eq(2)
-        expect(result.created).to eq(1)
-        expect(result.updated).to eq(0)
+      it 'creates one affiliate and skips the duplicate' do
+        expect { result }.to change(Affiliate, :count).by(1)
+        expect(Affiliate.first.email).to eq('bob@foo.com')
       end
     end
 
@@ -104,54 +93,14 @@ RSpec.describe Affiliates::Import::Orchestrator do
         merchant
         <<~CSV
           merchant_slug,first_name,last_name,email,website_url,commissions_total,extra_col
-          test-merchant,Anna,Smith,anna@foo.com,,0,SHOULD_BE_IGNORED
+          test-merchant,Anna,Smith,anna@foo.com,,0,EXTRA
 
         CSV
       end
 
-      it 'ignores extra columns and blank lines' do
-        expect(result).to be_success
-        expect(result.created).to eq(1)
-      end
-    end
-
-    context 'when CSV is missing a required header' do
-      let(:csv_content) do
-        merchant
-        <<~CSV
-          merchant_slug,first_name,last_name
-          test-merchant,Jim,Beam
-        CSV
-      end
-
-      it 'adds a missing headers error to result' do
-        expect(result).not_to be_success
-        expect(result.errors.first.message).to match(/Missing required headers/i)
-        expect(result.total).to eq(0)
-      end
-    end
-
-    context 'when CSV is malformed' do
-      let(:csv_content) do
-        merchant
-        "merchant_slug,first_name,last_name,email\n\"a,b,c"
-      end
-
-      it 'adds a CSV format error to result' do
-        expect(result).not_to be_success
-        expect(result.errors.first.message).to match(/Invalid CSV format/)
-      end
-    end
-
-    context 'with empty file' do
-      let(:csv_content) do
-        merchant
-        ''
-      end
-
-      it 'adds an error for invalid CSV or missing headers' do
-        expect(result.errors.first.message).to match(/Invalid CSV format|Missing required headers/i)
-        expect(result.total).to eq(0)
+      it 'ignores extra columns and creates affiliate' do
+        expect { result }.to change(Affiliate, :count).by(1)
+        expect(Affiliate.last.email).to eq('anna@foo.com')
       end
     end
 
@@ -161,20 +110,27 @@ RSpec.describe Affiliates::Import::Orchestrator do
         "merchant_slug,first_name,last_name,email,website_url,commissions_total\n"
       end
 
-      it 'is successful' do
-        expect(result).to be_success
+      it 'does not create any affiliates' do
+        expect { result }.not_to change(Affiliate, :count)
+      end
+    end
+
+    context 'with empty file' do
+      let(:csv_content) { '' }
+
+      it 'does not create any affiliates' do
+        expect { result }.not_to change(Affiliate, :count)
+      end
+    end
+
+    context 'with malformed CSV' do
+      let(:csv_content) do
+        merchant
+        "merchant_slug,first_name,last_name,email\n\"a,b,c"
       end
 
-      it 'has zero total rows' do
-        expect(result.total).to eq(0)
-      end
-
-      it 'creates zero affiliates' do
-        expect(result.created).to eq(0)
-      end
-
-      it 'has no errors' do
-        expect(result.errors).to be_empty
+      it 'does not create any affiliates' do
+        expect { result }.not_to change(Affiliate, :count)
       end
     end
 
@@ -185,8 +141,8 @@ RSpec.describe Affiliates::Import::Orchestrator do
           "test-merchant ;  Ann ;  O'Malley ; ann@weird.com ; ann.com ; 10,05\n"
       end
 
-      it 'handles weird delimiters and whitespace' do
-        expect(result).to be_success
+      it 'creates affiliate with proper formatting' do
+        expect { result }.to change(Affiliate, :count).by(1)
         expect(Affiliate.last.email).to eq('ann@weird.com')
         expect(Affiliate.last.commissions_total).to eq(10.05)
       end

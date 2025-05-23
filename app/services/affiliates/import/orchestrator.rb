@@ -2,24 +2,26 @@
 
 module Affiliates
   module Import
-    # Orchestrates the affiliate import process, handling parsing, normalization,
-    # row-by-row processing, and error tracking.
+    # Orchestrator is responsible for handling the overall flow of CSV affiliate imports.
+    # It parses the CSV, delegates each row to Sidekiq workers, and tracks errors.
     class Orchestrator
-      # Error types that are considered recoverable and will be
-      # added to the result errors instead of raising.
+      # Errors that are caught and added to the result object instead of raising.
       HANDLED_ERRORS = [
-        Affiliates::Import::Parser::MissingHeadersError,
+        Parser::MissingHeadersError,
         CSV::MalformedCSVError
       ].freeze
 
-      # @param file [ActionDispatch::Http::UploadedFile, IO, String]
-      def initialize(file)
+      # @param file [IO, Tempfile] The CSV file or stream
+      # @param audit [ImportAudit] The associated audit record
+      def initialize(file, audit)
         @file = file
+        @audit = audit
         @result = Result.new
       end
 
-      # Executes the full import process.
-      # @return [Result] encapsulating all stats and errors
+      # Runs the import orchestration: parsing and delegating row jobs.
+      #
+      # @return [Result] the result object tracking import stats and errors
       def call
         process_rows(parse_file)
         result
@@ -31,35 +33,32 @@ module Affiliates
 
       private
 
-      attr_reader :file, :result
-
+      # @return [CSV::Table] parsed rows from the file
       def parse_file
         Parser.new(file).call
       end
 
-      # Iterates over each row and processes it.
+      # Enqueues each row to a Sidekiq worker for background processing.
+      #
+      # @param rows [CSV::Table] parsed rows from the CSV file
+      # @return [void]
       def process_rows(rows)
         rows.each_with_index do |raw_row, index|
-          process_row(raw_row, index + 2) # +2 for header row and 0-indexing
+          RowImportWorker.perform_async(
+            raw_row.to_h.transform_keys(&:to_s),
+            index + 2,
+            audit.id
+          )
         end
       end
 
-      # Normalizes, sanitizes, and processes a row, updating result stats.
-      def process_row(raw_row, line)
-        row_hash = extract_row_hash(raw_row)
-        processed_row = RowProcessor.new(row_hash).call
-        Processor.new(processed_row, result, line).call
-      end
-
-      # Converts CSV::Row to Hash with symbol keys for consistency.
-      def extract_row_hash(raw_row)
-        raw_row.respond_to?(:to_h) ? raw_row.to_h.symbolize_keys : raw_row.symbolize_keys
-      end
-
-      # Handles known error types gracefully.
+      # Handles expected errors and adds them to the result object.
+      #
+      # @param error [StandardError]
+      # @return [Result]
       def handle_known_error(error)
         case error
-        when Affiliates::Import::Parser::MissingHeadersError
+        when Parser::MissingHeadersError
           result.add_error("Missing required headers: #{error.missing.join(', ')}")
         when CSV::MalformedCSVError
           result.add_error("Invalid CSV format: #{error.message}")
@@ -67,12 +66,20 @@ module Affiliates
         result
       end
 
-      # Handles truly unexpected errors (logs, then surfaces error).
+      # Handles unexpected runtime errors and logs them.
+      #
+      # @param error [StandardError]
+      # @return [Result]
       def handle_unexpected_error(error)
-        Rails.logger.error(message: 'Affiliates import error', error: e.message)
+        Rails.logger.error(message: 'Affiliates import error', error: error.message)
         result.add_error("Unexpected import error: #{error.message}")
         result
       end
+
+      # @return [IO] The file object being imported
+      # @return [Result] The import result tracker
+      # @return [ImportAudit] The associated audit record
+      attr_reader :file, :result, :audit
     end
   end
 end
