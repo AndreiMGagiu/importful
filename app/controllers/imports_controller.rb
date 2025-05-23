@@ -1,14 +1,45 @@
 # frozen_string_literal: true
 
+# Controller responsible for generating S3 presigned URLs for CSV imports.
+# @return [JSON] Presigned URL and associated metadata
 class ImportsController < ApplicationController
+  protect_from_forgery with: :null_session
+
+  # Generates a presigned S3 URL for direct file upload and creates an ImportAudit record.
+  #
+  # @return [void]
+  # @raise [Aws::Errors::ServiceError] if AWS credentials or network issues cause a failure
+  # @raise [ActiveRecord::RecordInvalid] if ImportAudit creation fails validation
   def create
-    return respond_with_error('No file uploaded') if params[:file].blank?
+    render json: signed_url
+  rescue Aws::Errors::ServiceError, ActiveRecord::RecordInvalid => error
+    log_error(error, params)
+    render json: { error: 'Failed to generate signed URL' }, status: :internal_server_error
+  end
 
-    result = Affiliates::Import::Orchestrator.new(params[:file]).call
+  private
 
-    respond_to do |format|
-      format.json { respond_with_json(result) }
-      format.html { respond_with_html(result) }
-    end
+  # Instantiates and calls the GenerateSignedUrl service.
+  #
+  # @return [Hash] Hash containing the S3 direct_upload URL and the key
+  def signed_url
+    Affiliates::GenerateSignedUrl.new(
+      filename: params[:filename],
+      content_type: params[:content_type]
+    ).call
+  end
+
+  # Logs details about any error encountered while generating the presigned URL.
+  #
+  # @param error [StandardError] the rescued error
+  # @param info [ActionController::Parameters] the incoming params
+  # @return [void]
+  def log_error(error, info)
+    Rails.logger.error(
+      message: 'Unable to generate signed URL',
+      error: error.message,
+      params: info.slice(:filename, :content_type),
+      request_id: request.request_id
+    )
   end
 end

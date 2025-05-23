@@ -3,90 +3,90 @@
 require 'rails_helper'
 
 RSpec.describe 'Imports' do
-  let(:merchant) { create(:merchant, slug: 'test-merchant') }
-  let(:valid_csv_path)   { Rails.root.join('spec/fixtures/files/valid_affiliates.csv') }
-  let(:invalid_csv_path) { Rails.root.join('spec/fixtures/files/invalid_affiliates.csv') }
-
-  before { merchant }
-
-  describe 'GET /' do
-    it 'returns http success' do
-      get '/'
-      expect(response).to have_http_status(:success)
-    end
-  end
-
   describe 'POST /imports' do
-    context 'with HTML requests' do
-      context 'with a valid file' do
-        it 'creates affiliates' do
-          expect do
-            post imports_path, params: { file: fixture_file_upload(valid_csv_path, 'text/csv') }
-          end.to change(Affiliate, :count).by(2)
-        end
+    let(:params) do
+      {
+        filename: 'test.csv',
+        content_type: 'text/csv'
+      }
+    end
 
-        it 'redirects to root path' do
-          post imports_path, params: { file: fixture_file_upload(valid_csv_path, 'text/csv') }
-          expect(response).to redirect_to(root_path)
-        end
+    let(:expected_keys) { %w[direct_upload key] }
 
-        it 'sets a flash notice' do
-          post imports_path, params: { file: fixture_file_upload(valid_csv_path, 'text/csv') }
-          follow_redirect!
-          expect(flash[:notice]).to match(/Import completed:/)
-        end
+    let(:s3_object) do
+      instance_double(Aws::S3::Object, presigned_url: 'https://s3.amazonaws.com/fake-url')
+    end
 
-        it 'creates affiliates with correct emails' do
-          post imports_path, params: { file: fixture_file_upload(valid_csv_path, 'text/csv') }
-          expect(Affiliate.pluck(:email)).to include('john@example.com', 'jane@foo.com')
-        end
+    before do
+      allow(Aws::S3::Resource).to receive(:new).and_return(
+        instance_double(Aws::S3::Resource,
+          bucket: instance_double(Aws::S3::Bucket,
+            object: s3_object))
+      )
+    end
+
+    context 'when request is valid' do
+      it 'creates an ImportAudit record' do
+        expect do
+          post '/imports', params: params
+        end.to change(ImportAudit, :count).by(1)
       end
 
-      context 'without a file' do
-        it 'does not create affiliates' do
-          expect do
-            post imports_path
-          end.not_to change(Affiliate, :count)
-        end
+      it 'returns a 200 OK status' do
+        post '/imports', params: params
+        expect(response).to have_http_status(:ok)
+      end
 
-        it 'redirects to root path' do
-          post imports_path
-          expect(response).to redirect_to(root_path)
-        end
+      it 'returns expected JSON keys' do
+        post '/imports', params: params
+        json = response.parsed_body
+        expect(json.keys).to match_array(expected_keys)
+      end
 
-        it 'sets a flash alert' do
-          post imports_path
-          follow_redirect!
-          expect(flash[:alert]).to eq('No file uploaded')
-        end
+      it 'includes URL in response' do
+        post '/imports', params: params
+        json = response.parsed_body
+        expect(json['direct_upload']['url']).to include('https://s3.amazonaws.com/fake-url')
+      end
+
+      it 'includes headers in response' do
+        post '/imports', params: params
+        json = response.parsed_body
+        expect(json['direct_upload']).to include('headers')
       end
     end
 
-    context 'with JSON requests' do
-      context 'with a valid file' do
-        before do
-          post imports_path,
-            params: { file: fixture_file_upload(valid_csv_path, 'text/csv') },
-            headers: { 'ACCEPT' => 'application/json' }
-        end
+    context 'when AWS service fails' do
+      before do
+        allow(s3_object).to receive(:presigned_url).and_raise(Aws::Errors::ServiceError.new(nil, 'AWS error'))
+      end
 
-        let(:json) { response.parsed_body }
+      it 'returns a 500 Internal Server Error' do
+        post '/imports', params: params
+        expect(response).to have_http_status(:internal_server_error)
+      end
 
-        it 'returns JSON success' do
-          expect(response).to have_http_status(:ok)
-        end
+      it 'returns error message in JSON' do
+        post '/imports', params: params
+        json = response.parsed_body
+        expect(json['error']).to eq('Failed to generate signed URL')
+      end
+    end
 
-        it 'includes status in JSON' do
-          expect(json['status']).to eq('ok')
-        end
+    context 'when ImportAudit validation fails' do
+      before do
+        allow(ImportAudit).to receive(:create!).and_raise(ActiveRecord::RecordInvalid.new(ImportAudit.new))
+      end
 
-        it 'includes created count in JSON' do
-          expect(json['created']).to be >= 1
-        end
+      it 'returns a 500 Internal Server Error' do
+        post '/imports', params: params
+        expect(response).to have_http_status(:internal_server_error)
+      end
 
-        it 'creates affiliates with correct emails' do
-          expect(Affiliate.pluck(:email)).to include('john@example.com', 'jane@foo.com')
-        end
+      it 'returns error message in JSON' do
+        post '/imports', params: params
+        json = response.parsed_body
+        expect(json['error']).to eq('Failed to generate signed URL')
       end
     end
   end
