@@ -2,97 +2,80 @@
 
 module Affiliates
   module Import
-    # Processes a single CSV row and updates import statistics.
-    # Handles affiliate creation, update, or error logging.
+    # Processes a single sanitized affiliate row.
+    # Finds or initializes an Affiliate record based on email and merchant slug,
+    # applies changes, saves if needed, and records outcomes in the import result.
     class Processor
-      # @param row [Hash] The sanitized affiliate data for one row
-      # @param result [Affiliates::Import::Result] The result stats and errors tracker
-      # @param line [Integer] The CSV line number (for error reporting)
+      # @param row [Hash] A sanitized affiliate row with symbol keys
+      # @param result [Affiliates::Import::Result] A shared result object used to track import stats
+      # @param line [Integer] Line number in the original CSV (used for error reporting)
       def initialize(row, result, line)
         @row = row
         @result = result
         @line = line
       end
 
-      # Main entrypoint for processing the row
-      # Increments total, creates/updates affiliate or logs errors.
+      # Processes the affiliate row and updates the result accordingly.
+      #
+      # @return [Affiliates::Import::Result] the updated result object
       def call
         result.increment_total
 
-        return missing_merchant_error if merchant.blank?
+        return log_merchant_error unless merchant
 
-        assign_affiliate_attributes
-
-        return unless affiliate_changed?
-
-        save_affiliate
+        process_affiliate
+        result
+      rescue StandardError => error
+        result.add_error("Line #{line}: Unexpected error - #{error.message}", line: line)
+        result
       end
 
       private
 
       attr_reader :row, :result, :line
 
-      # Finds merchant by slug, memoized for efficiency
+      # Finds the merchant by slug.
+      #
+      # @return [Merchant, nil]
       def merchant
         @merchant ||= Merchant.find_by(slug: row[:merchant_slug])
       end
 
-      # Finds or builds affiliate for the merchant and email
-      def affiliate
-        @affiliate ||= find_or_build_affiliate
-      end
+      # Saves the affiliate if needed and tracks the result.
+      #
+      # @return [void]
+      def process_affiliate
+        return result.increment_skipped unless affiliate.new_record? || affiliate.changed?
 
-      # Helper for affiliate lookup/initialization
-      def find_or_build_affiliate
-        merchant.affiliates.find_or_initialize_by(email: row[:email])
-      end
-
-      # Assigns incoming CSV attributes to affiliate
-      def assign_affiliate_attributes
-        affiliate.assign_attributes(affiliate_attributes)
-      end
-
-      # Attributes hash for mass-assignment
-      def affiliate_attributes
-        {
-          first_name: row[:first_name],
-          last_name: row[:last_name],
-          website_url: row[:website_url],
-          commissions_total: row[:commissions_total]
-        }
-      end
-
-      # Determines if the affiliate needs to be saved (created or updated)
-      def affiliate_changed?
-        affiliate.new_record? || affiliate.changed?
-      end
-
-      # Attempts to save affiliate, tracks success or failure
-      def save_affiliate
-        affiliate.save ? record_success : record_failure
-      end
-
-      # Tracks if the record was created or updated
-      def record_success
-        if affiliate.previous_changes.key?('id')
-          result.increment_created
+        if affiliate.save
+          affiliate.previous_changes.key?('id') ? result.increment_created : result.increment_updated
         else
-          result.increment_updated
+          result.add_error("Line #{line}: #{affiliate.errors.full_messages.join(', ')}", line: line)
         end
       end
 
-      # Adds a formatted error to the result object
-      def record_failure
-        error_message = affiliate.errors.full_messages.join(', ')
-        result.add_error("Line #{line}: #{error_message}", line: line)
+      # Finds or initializes the affiliate and assigns attributes.
+      #
+      # @return [Affiliate]
+      def affiliate
+        @affiliate ||= merchant.affiliates.find_or_initialize_by(email: row[:email]).tap do |aff|
+          aff.assign_attributes(affiliate_attributes)
+        end
       end
 
-      # Logs merchant-missing error to result
-      def missing_merchant_error
-        result.add_error(
-          "Line #{line}: Unknown merchant slug '#{row[:merchant_slug]}'",
-          line: line
-        )
+      # Returns the attributes to assign to the affiliate.
+      #
+      # @return [Hash]
+      def affiliate_attributes
+        row.slice(:first_name, :last_name, :website_url, :commissions_total)
+      end
+
+      # Logs an error when the merchant is not found.
+      #
+      # @return [Affiliates::Import::Result]
+      def log_merchant_error
+        result.add_error("Line #{line}: Unknown merchant slug '#{row[:merchant_slug]}'", line: line)
+        result
       end
     end
   end
