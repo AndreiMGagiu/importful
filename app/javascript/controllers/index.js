@@ -4,6 +4,12 @@
 
 import { application } from "./application"
 
+import AffiliatesTableController from "./affiliates_table_controller"
+application.register("affiliates-table", AffiliatesTableController)
+
+import DashboardController from "./dashboard_controller"
+application.register("dashboard", DashboardController)
+
 import HelloController from "./hello_controller"
 application.register("hello", HelloController)
 
