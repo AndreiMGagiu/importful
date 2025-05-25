@@ -1,0 +1,162 @@
+<div class="card border-0 shadow-sm">
+  <!-- Results Header -->
+  <div class="card-header bg-white border-bottom">
+    <div class="d-flex justify-content-between align-items-center">
+      <h6 class="mb-0 fw-semibold">
+        <i class="bi bi-people me-2 text-primary"></i>
+        <%= number_with_delimiter(total_count) %> Affiliates Found
+      </h6>
+      <div class="text-muted small">
+        Showing <%= offset + 1 %>-<%= [offset + per_page, total_count].min %> of <%= number_with_delimiter(total_count) %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modern Table -->
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead class="table-light">
+        <tr>
+          <th class="border-0 fw-semibold py-3">Affiliate</th>
+          <th class="border-0 fw-semibold py-3">Contact</th>
+          <th class="border-0 fw-semibold py-3">Merchant</th>
+          <th class="border-0 fw-semibold py-3">Website</th>
+          <th class="border-0 fw-semibold py-3 text-end">Commission</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% affiliates.each do |affiliate| %>
+        <tr>
+          <td class="py-3">
+            <div class="d-flex align-items-center">
+              <div class="rounded-circle bg-primary bg-opacity-10 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-person text-primary"></i>
+              </div>
+              <div>
+                <div class="fw-semibold text-dark"><%= "#{affiliate.first_name} #{affiliate.last_name}" %></div>
+                <small class="text-muted">ID: #<%= affiliate.id %></small>
+              </div>
+            </div>
+          </td>
+          <td class="py-3">
+            <div>
+              <div class="text-dark"><%= truncate(affiliate.email, length: 30) %></div>
+              <small class="text-muted">
+                <i class="bi bi-calendar3 me-1"></i>
+                Joined <%= time_ago_in_words(affiliate.created_at) %> ago
+              </small>
+            </div>
+          </td>
+          <td class="py-3">
+            <span class="badge bg-light text-dark border px-3 py-2">
+              <i class="bi bi-shop me-1"></i>
+              <%= truncate(affiliate.merchant.slug, length: 15) %>
+            </span>
+          </td>
+          <td class="py-3">
+            <% if affiliate.website_url.present? %>
+            <%= link_to affiliate.website_url, target: "_blank", class: "text-decoration-none text-primary d-flex align-items-center", title: "Visit #{affiliate.website_url}" do %>
+            <i class="bi bi-globe me-2"></i>
+            <span><%= truncate(affiliate.website_url.gsub(/^https?:\/\/(www\.)?/, ''), length: 20) %></span>
+            <i class="bi bi-external-link ms-1 small"></i>
+            <% end %>
+            <% else %>
+            <span class="text-muted d-flex align-items-center">
+              <i class="bi bi-dash-circle me-2"></i>
+              No website
+            </span>
+            <% end %>
+          </td>
+          <td class="py-3 text-end">
+            <div class="fw-bold text-success fs-5" title="<%= format_currency_detailed(affiliate.commissions_total) %>">
+              <%= format_currency_short(affiliate.commissions_total) %>
+            </div>
+            <small class="text-muted">Total earned</small>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modern Pagination -->
+  <div class="card-footer bg-light border-0 py-3">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <div class="text-muted">
+          Showing <strong><%= offset + 1 %></strong> to <strong><%= [offset + per_page, total_count].min %></strong>
+          of <strong><%= number_with_delimiter(total_count) %></strong> results
+        </div>
+      </div>
+      <div class="col-md-6">
+        <nav aria-label="Pagination" class="d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
+          <ul class="pagination mb-0">
+            <% prev_page = page > 1 ? page - 1 : nil %>
+            <% next_page = page < total_pages ? page + 1 : nil %>
+
+            <!-- First Page -->
+            <% if page > 3 %>
+            <li class="page-item">
+              <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="1">
+                1
+              </a>
+            </li>
+            <% if page > 4 %>
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+            <% end %>
+            <% end %>
+
+            <!-- Previous -->
+            <% if prev_page %>
+            <li class="page-item">
+              <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="<%= prev_page %>">
+                <i class="bi bi-chevron-left"></i>
+              </a>
+            </li>
+            <% end %>
+
+            <!-- Page Numbers -->
+            <% start_page = [page - 2, 1].max %>
+            <% end_page = [page + 2, total_pages].min %>
+            <% (start_page..end_page).each do |p| %>
+            <li class="page-item <%= 'active' if p == page %>">
+              <% if p == page %>
+              <span class="page-link"><%= p %></span>
+              <% else %>
+              <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="<%= p %>">
+                <%= p %>
+              </a>
+              <% end %>
+            </li>
+            <% end %>
+
+            <!-- Next -->
+            <% if next_page %>
+            <li class="page-item">
+              <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="<%= next_page %>">
+                <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+            <% end %>
+
+            <!-- Last Page -->
+            <% if page < total_pages - 2 %>
+            <% if page < total_pages - 3 %>
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+            <% end %>
+            <li class="page-item">
+              <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="<%= total_pages %>">
+                <%= total_pages %>
+              </a>
+            </li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
