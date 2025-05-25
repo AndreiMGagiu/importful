@@ -1,0 +1,210 @@
+<% content_for :title, "Import Audit Details - Dashboard" %>
+
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="h3 fw-bold text-dark mb-1">Import Audit Details</h1>
+          <p class="text-muted mb-0"><%= @import_audit.filename %></p>
+        </div>
+        <%= link_to dashboard_import_audits_path, class: "btn btn-outline-secondary" do %>
+        <i class="bi bi-arrow-left me-2"></i>Back to Import Logs
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Details -->
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+          <h6 class="mb-0 fw-semibold">Import Information</h6>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted">Filename</label>
+              <p class="mb-0"><%= @import_audit.filename %></p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted">Import Type</label>
+              <p class="mb-0"><%= @import_audit.import_type.humanize %></p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted">Status</label>
+              <p class="mb-0">
+                <% if @import_audit.status == 'processed' %>
+                <span class="badge bg-success px-3 py-2">
+                  <i class="bi bi-check-circle me-1"></i>Processed
+                </span>
+                <% elsif @import_audit.status == 'pending' %>
+                <span class="badge bg-warning px-3 py-2">
+                  <i class="bi bi-clock me-1"></i>Pending
+                </span>
+                <% elsif @import_audit.status == 'failed' %>
+                <span class="badge bg-danger px-3 py-2">
+                  <i class="bi bi-x-circle me-1"></i>Failed
+                </span>
+                <% else %>
+                <span class="badge bg-secondary px-3 py-2">
+                  <i class="bi bi-question-circle me-1"></i><%= @import_audit.status.humanize %>
+                </span>
+                <% end %>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted">Processed At</label>
+              <p class="mb-0">
+                <% if @import_audit.processed_at.present? %>
+                <%= @import_audit.processed_at.strftime("%B %d, %Y at %I:%M %p") %>
+                <% else %>
+                <span class="text-muted">Not processed yet</span>
+                <% end %>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted">Successful Rows</label>
+              <p class="mb-0 text-success fw-bold"><%= number_with_delimiter(@import_audit.total_successful_rows || 0) %></p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted">Failed Rows</label>
+              <p class="mb-0 text-danger fw-bold"><%= number_with_delimiter(@import_audit.total_failed_rows || 0) %></p>
+            </div>
+
+            <!-- Error Message Section -->
+            <% if @import_audit.error_message.present? %>
+            <div class="col-12">
+              <label class="form-label fw-semibold text-muted">Error Message</label>
+              <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <%= @import_audit.error_message %>
+              </div>
+            </div>
+            <% end %>
+
+            <!-- Error Details Section -->
+            <% if @import_audit.error_details.present? %>
+            <div class="col-12">
+              <label class="form-label fw-semibold text-muted">Error Details</label>
+              <div class="alert alert-warning">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Detailed Error Information:</strong>
+                <div class="mt-2">
+                  <% 
+                      # Handle different types of error_details storage
+                      error_details = @import_audit.error_details
+                      
+                      # If it's already an array, use it directly
+                      if error_details.is_a?(Array)
+                        parsed_errors = error_details
+                      # If it's a string, try to parse as JSON
+                      elsif error_details.is_a?(String)
+                        begin
+                          parsed_errors = JSON.parse(error_details)
+                        rescue JSON::ParserError
+                          # If JSON parsing fails, treat as plain text
+                          parsed_errors = [error_details]
+                        end
+                      else
+                        # Fallback for other types
+                        parsed_errors = [error_details.to_s]
+                      end
+                    %>
+
+                  <% if parsed_errors.is_a?(Array) %>
+                  <ul class="mb-0">
+                    <% parsed_errors.each do |error| %>
+                    <li class="mb-1">
+                      <code class="text-danger"><%= error %></code>
+                    </li>
+                    <% end %>
+                  </ul>
+                  <% else %>
+                  <pre class="mb-0 small bg-light p-2 rounded"><%= parsed_errors %></pre>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom">
+          <h6 class="mb-0 fw-semibold">Import Summary</h6>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <% total_rows = (@import_audit.total_successful_rows || 0) + (@import_audit.total_failed_rows || 0) %>
+            <% success_rate = total_rows > 0 ? ((@import_audit.total_successful_rows || 0).to_f / total_rows * 100).round(1) : 0 %>
+
+            <div class="position-relative d-inline-block">
+              <svg width="120" height="120" class="mb-3">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#e9ecef" stroke-width="8" />
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#28a745" stroke-width="8" stroke-dasharray="<%= (success_rate * 314 / 100).round(2) %> 314" stroke-dashoffset="0" transform="rotate(-90 60 60)" />
+              </svg>
+              <div class="position-absolute top-50 start-50 translate-middle">
+                <h4 class="fw-bold mb-0"><%= success_rate %>%</h4>
+                <small class="text-muted">Success</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="row text-center">
+            <div class="col-6">
+              <div class="border-end">
+                <h5 class="fw-bold text-success mb-1"><%= number_with_delimiter(@import_audit.total_successful_rows || 0) %></h5>
+                <small class="text-muted">Successful</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <h5 class="fw-bold text-danger mb-1"><%= number_with_delimiter(@import_audit.total_failed_rows || 0) %></h5>
+              <small class="text-muted">Failed</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Analysis Card (only show if there are errors) -->
+      <% if @import_audit.status == 'failed' && (@import_audit.error_details.present? || @import_audit.error_message.present?) %>
+      <div class="card border-0 shadow-sm mt-3">
+        <div class="card-header bg-white border-bottom">
+          <h6 class="mb-0 fw-semibold text-danger">
+            <i class="bi bi-bug me-2"></i>Error Analysis
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-danger mb-3">
+            <h6 class="alert-heading">
+              <i class="bi bi-exclamation-triangle me-2"></i>Import Failed
+            </h6>
+            <p class="mb-0">This import encountered errors and could not be completed successfully.</p>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="fw-semibold mb-2">Common Solutions:</h6>
+            <ul class="small mb-0">
+              <li>Check CSV format and column headers</li>
+              <li>Ensure all required fields are present</li>
+              <li>Verify data types match expected format</li>
+              <li>Remove any special characters or encoding issues</li>
+            </ul>
+          </div>
+
+          <div class="d-grid">
+            <button class="btn btn-outline-primary btn-sm" onclick="window.location.reload()">
+              <i class="bi bi-arrow-clockwise me-2"></i>Retry Import
+            </button>
+          </div>
+        </div>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
