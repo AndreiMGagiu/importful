@@ -1,0 +1,21 @@
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  box-shadow: 0 4px 6px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(var(--bs-primary-rgb), 0.25);
+}
+
+.btn-success {
+  box-shadow: 0 4px 6px rgba(var(--bs-success-rgb), 0.2);
+}
+
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(var(--bs-success-rgb), 0.25);
+}
