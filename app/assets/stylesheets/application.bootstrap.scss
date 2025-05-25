@@ -1,6 +1,9 @@
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons";
+
+// Custom stylesheets
 @import "homepage";
+@import "homepage_animations";
 @import "notifications";
 @import "csv_upload";
 @import "buttons";
@@ -8,31 +11,4 @@
 @import "accordion";
 @import "progress_bar";
 @import "modal";
-
-.badge {
-  transition: all 0.3s ease;
-}
-
-.rounded-4 {
-  border-radius: 0.75rem !important;
-}
-
-.transition-all {
-  transition: all 0.3s ease;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .btn-lg {
-    padding: 0.5rem 1.5rem !important;
-    font-size: 1rem !important;
-  }
-
-  .display-3 {
-    font-size: 3rem !important;
-  }
-
-  .display-4 {
-    font-size: 2.5rem !important;
-  }
-}
+@import "navbar";

@@ -1,21 +1,21 @@
 <% content_for :title, "Dashboard - Importful" %>
 
-<div class="container-fluid py-3" data-controller="dashboard">
+<div class="container-fluid py-2" data-controller="dashboard">
   <!-- Dashboard Header -->
   <div class="row mb-3">
     <div class="col-12">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
         <div>
           <h1 class="h4 fw-bold text-dark mb-1">Dashboard</h1>
           <p class="text-muted mb-0 small">Overview of your affiliate and merchant data</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-column flex-sm-row gap-2">
           <%= link_to dashboard_import_audits_path, 
-                      class: "btn btn-sm btn-primary", 
+                      class: "btn btn-sm btn-primary d-flex align-items-center", 
                       title: "View your CSV import history and status" do %>
           <i class="bi bi-file-earmark-spreadsheet me-1"></i>View Import Logs
           <% end %>
-          <button class="btn btn-sm btn-outline-secondary" data-action="click->dashboard#refreshStats">
+          <button class="btn btn-sm btn-outline-secondary d-flex align-items-center" data-action="click->dashboard#refreshStats">
             <i class="bi bi-arrow-clockwise me-1"></i>Refresh
           </button>
         </div>
@@ -27,12 +27,12 @@
   <div class="row mb-3" data-dashboard-target="statsContainer">
     <div class="col-xl-3 col-md-6 mb-2">
       <div class="card border-0 shadow-sm h-100">
-        <div class="card-body py-3">
+        <div class="card-body p-3">
           <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3">
+            <div class="rounded-circle bg-primary bg-opacity-10 p-2 me-3 flex-shrink-0">
               <i class="bi bi-people-fill fs-5 text-primary"></i>
             </div>
-            <div>
+            <div class="min-w-0">
               <h6 class="text-muted mb-1 small">Total Affiliates</h6>
               <h4 class="fw-bold mb-0"><%= number_with_delimiter(@stats[:total_affiliates]) %></h4>
               <small class="text-success">
@@ -47,12 +47,12 @@
 
     <div class="col-xl-3 col-md-6 mb-2">
       <div class="card border-0 shadow-sm h-100">
-        <div class="card-body py-3">
+        <div class="card-body p-3">
           <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3">
+            <div class="rounded-circle bg-success bg-opacity-10 p-2 me-3 flex-shrink-0">
               <i class="bi bi-shop fs-5 text-success"></i>
             </div>
-            <div>
+            <div class="min-w-0">
               <h6 class="text-muted mb-1 small">Total Merchants</h6>
               <h4 class="fw-bold mb-0"><%= number_with_delimiter(@stats[:total_merchants]) %></h4>
               <small class="text-muted">Active partnerships</small>
@@ -64,12 +64,12 @@
 
     <div class="col-xl-3 col-md-6 mb-2">
       <div class="card border-0 shadow-sm h-100">
-        <div class="card-body py-3">
+        <div class="card-body p-3">
           <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3">
+            <div class="rounded-circle bg-warning bg-opacity-10 p-2 me-3 flex-shrink-0">
               <i class="bi bi-currency-dollar fs-5 text-warning"></i>
             </div>
-            <div>
+            <div class="min-w-0">
               <h6 class="text-muted mb-1 small">Total Commissions</h6>
               <h4 class="fw-bold mb-0"><%= format_currency_short(@stats[:total_commissions]) %></h4>
               <small class="text-muted" title="<%= format_currency_detailed(@stats[:total_commissions]) %>">
@@ -83,12 +83,12 @@
 
     <div class="col-xl-3 col-md-6 mb-2">
       <div class="card border-0 shadow-sm h-100">
-        <div class="card-body py-3">
+        <div class="card-body p-3">
           <div class="d-flex align-items-center">
-            <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3">
+            <div class="rounded-circle bg-info bg-opacity-10 p-2 me-3 flex-shrink-0">
               <i class="bi bi-graph-up fs-5 text-info"></i>
             </div>
-            <div>
+            <div class="min-w-0">
               <h6 class="text-muted mb-1 small">Avg Commission</h6>
               <h4 class="fw-bold mb-0"><%= format_currency_short(@stats[:avg_commission]) %></h4>
               <small class="text-muted" title="<%= format_currency_detailed(@stats[:avg_commission]) %>">
@@ -107,10 +107,10 @@
     <div class="col-lg-8 mb-3">
       <!-- Recent Affiliates Table -->
       <div class="card border-0 shadow-sm mb-3">
-        <div class="card-header bg-white border-0 py-2">
-          <div class="d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white border-bottom py-2">
+          <div class="d-flex justify-content-between align-items-center gap-3">
             <h6 class="fw-bold mb-0">Recent Affiliates</h6>
-            <%= link_to dashboard_affiliates_path, class: "btn btn-sm btn-outline-primary" do %>
+            <%= link_to dashboard_affiliates_path, class: "btn btn-outline-primary btn-sm d-flex align-items-center" do %>
             View All <i class="bi bi-arrow-right ms-1"></i>
             <% end %>
           </div>
@@ -120,11 +120,11 @@
             <table class="table table-hover table-sm mb-0">
               <thead class="table-light">
                 <tr>
-                  <th class="border-0 fw-semibold small">Name</th>
-                  <th class="border-0 fw-semibold small">Email</th>
-                  <th class="border-0 fw-semibold small">Merchant</th>
-                  <th class="border-0 fw-semibold small">Commission</th>
-                  <th class="border-0 fw-semibold small">Joined</th>
+                  <th class="border-0 fw-semibold py-2 small">Name</th>
+                  <th class="border-0 fw-semibold py-2 small d-none d-md-table-cell">Email</th>
+                  <th class="border-0 fw-semibold py-2 small">Merchant</th>
+                  <th class="border-0 fw-semibold py-2 small text-end">Commission</th>
+                  <th class="border-0 fw-semibold py-2 small d-none d-lg-table-cell">Joined</th>
                 </tr>
               </thead>
               <tbody>
@@ -132,32 +132,36 @@
                 <tr>
                   <td class="py-2">
                     <div class="d-flex align-items-center">
-                      <div class="rounded-circle bg-primary bg-opacity-10 p-1 me-2" style="width: 24px; height: 24px;">
+                      <div class="rounded-circle bg-primary bg-opacity-10 p-1 me-2 flex-shrink-0" style="width: 24px; height: 24px;">
                         <i class="bi bi-person text-primary small"></i>
                       </div>
-                      <div>
+                      <div class="min-w-0">
                         <div class="fw-semibold small"><%= "#{affiliate.first_name} #{affiliate.last_name}" %></div>
                         <% if affiliate.website_url.present? %>
                         <small class="text-muted">
                           <i class="bi bi-globe me-1"></i>
-                          <%= link_to affiliate.website_url, affiliate.website_url, target: "_blank", class: "text-decoration-none" %>
+                          <%= link_to truncate(affiliate.website_url.gsub(/^https?:\/\/(www\.)?/, ''), length: 15), affiliate.website_url, target: "_blank", class: "text-decoration-none" %>
                         </small>
                         <% end %>
+                        <!-- Show email on mobile -->
+                        <div class="d-md-none">
+                          <small class="text-muted d-block"><%= truncate(affiliate.email, length: 20) %></small>
+                        </div>
                       </div>
                     </div>
                   </td>
-                  <td class="py-2">
+                  <td class="py-2 d-none d-md-table-cell">
                     <span class="text-muted small"><%= truncate(affiliate.email, length: 25) %></span>
                   </td>
                   <td class="py-2">
-                    <span class="badge bg-light text-dark small"><%= affiliate.merchant.slug %></span>
+                    <span class="badge bg-light text-dark border small"><%= truncate(affiliate.merchant.slug, length: 10) %></span>
                   </td>
-                  <td class="py-2">
+                  <td class="py-2 text-end">
                     <span class="fw-semibold text-success small" title="<%= format_currency_detailed(affiliate.commissions_total) %>">
                       <%= format_currency_short(affiliate.commissions_total) %>
                     </span>
                   </td>
-                  <td class="py-2">
+                  <td class="py-2 d-none d-lg-table-cell">
                     <small class="text-muted"><%= time_ago_in_words(affiliate.created_at) %> ago</small>
                   </td>
                 </tr>
@@ -170,25 +174,25 @@
 
       <!-- Recent Import Activity Card -->
       <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white border-0 py-2">
-          <div class="d-flex justify-content-between align-items-center">
+        <div class="card-header bg-white border-bottom py-2">
+          <div class="d-flex justify-content-between align-items-center gap-3">
             <h6 class="fw-bold mb-0">Recent Imports</h6>
-            <%= link_to dashboard_import_audits_path, class: "btn btn-sm btn-outline-primary" do %>
+            <%= link_to dashboard_import_audits_path, class: "btn btn-outline-primary btn-sm d-flex align-items-center" do %>
             View All <i class="bi bi-arrow-right ms-1"></i>
             <% end %>
           </div>
         </div>
-        <div class="card-body py-3">
+        <div class="card-body p-3">
           <% recent_imports = ImportAudit.order(created_at: :desc).limit(5) %>
           <% if recent_imports.any? %>
           <% recent_imports.each_with_index do |import, index| %>
-          <div class="d-flex align-items-center mb-3 <%= 'mb-0' if index == recent_imports.length - 1 %>">
-            <div class="rounded-circle bg-secondary bg-opacity-10 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-              <i class="bi bi-file-earmark-spreadsheet text-secondary"></i>
+          <div class="d-flex align-items-center py-2 <%= 'border-bottom' unless index == recent_imports.length - 1 %>">
+            <div class="rounded-circle bg-secondary bg-opacity-10 me-3 d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px;">
+              <i class="bi bi-file-earmark-spreadsheet text-secondary small"></i>
             </div>
             <div class="flex-grow-1 min-w-0">
               <%= link_to import_audit_path(import), class: "text-decoration-none" do %>
-              <div class="fw-semibold text-primary hover-underline"><%= truncate(import.filename, length: 35) %></div>
+              <div class="fw-semibold text-primary small"><%= truncate(import.filename, length: 30) %></div>
               <% end %>
               <small class="text-muted">
                 <i class="bi bi-clock me-1"></i>
@@ -197,9 +201,9 @@
                 <%= import.import_type.humanize %> CSV
               </small>
             </div>
-            <div class="text-end">
+            <div class="text-end flex-shrink-0">
               <% if import.status == 'processed' %>
-              <span class="badge bg-success">
+              <span class="badge bg-success small">
                 <i class="bi bi-check-circle me-1"></i>
                 Processed
               </span>
@@ -207,15 +211,12 @@
                 <%= number_with_delimiter(import.total_successful_rows || 0) %> rows
               </div>
               <% elsif import.status == 'failed' %>
-              <span class="badge bg-danger">
+              <span class="badge bg-danger small">
                 <i class="bi bi-x-circle me-1"></i>
                 Failed
               </span>
-              <div class="small text-muted mt-1">
-                <%= number_with_delimiter(import.total_failed_rows || 0) %> errors
-              </div>
               <% else %>
-              <span class="badge bg-warning">
+              <span class="badge bg-warning small">
                 <i class="bi bi-clock me-1"></i>
                 <%= import.status.humanize %>
               </span>
@@ -225,9 +226,9 @@
           <% end %>
           <% else %>
           <div class="text-center text-muted py-4">
-            <i class="bi bi-file-earmark-plus fs-1 mb-3 d-block text-muted"></i>
+            <i class="bi bi-file-earmark-plus fs-3 mb-2 d-block text-muted"></i>
             <h6 class="text-muted">No CSV imports yet</h6>
-            <p class="small mb-0">Upload your first CSV file to get started</p>
+            <p class="mb-0 small">Upload your first CSV file to get started</p>
           </div>
           <% end %>
         </div>
@@ -236,13 +237,13 @@
 
     <!-- Right Column - Top Merchants & Data Summary -->
     <div class="col-lg-4 mb-3">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white border-0 py-2">
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-header bg-white border-bottom py-2">
           <h6 class="fw-bold mb-0">Top Merchants</h6>
         </div>
-        <div class="card-body py-3">
+        <div class="card-body p-3">
           <% @top_merchants.each_with_index do |(merchant_slug, affiliate_count), index| %>
-          <div class="d-flex align-items-center mb-2 <%= 'mb-0' if index == @top_merchants.length - 1 %>">
+          <div class="d-flex align-items-center py-1 <%= 'border-bottom' unless index == @top_merchants.length - 1 %>">
             <div class="rounded-circle bg-success bg-opacity-10 p-1 me-2 flex-shrink-0" style="width: 24px; height: 24px;">
               <span class="fw-bold text-success small d-flex align-items-center justify-content-center h-100"><%= index + 1 %></span>
             </div>
@@ -250,7 +251,7 @@
               <div class="fw-semibold small text-truncate"><%= merchant_slug %></div>
               <small class="text-muted"><%= pluralize(affiliate_count, 'affiliate') %></small>
             </div>
-            <div class="text-end">
+            <div class="text-end flex-shrink-0">
               <span class="badge bg-primary small"><%= affiliate_count %></span>
             </div>
           </div>
@@ -259,11 +260,11 @@
       </div>
 
       <!-- Data Summary -->
-      <div class="card border-0 shadow-sm mt-3">
-        <div class="card-header bg-white border-0 py-2">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-bottom py-2">
           <h6 class="fw-bold mb-0">Data Summary</h6>
         </div>
-        <div class="card-body py-3">
+        <div class="card-body p-3">
           <div class="row text-center">
             <div class="col-6">
               <div class="border-end">
@@ -281,9 +282,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .hover-underline:hover {
-    text-decoration: underline !important;
-  }
-</style>

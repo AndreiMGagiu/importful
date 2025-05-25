@@ -10,8 +10,8 @@ application.register("affiliates-table", AffiliatesTableController)
 import DashboardController from "./dashboard_controller"
 application.register("dashboard", DashboardController)
 
-import HelloController from "./hello_controller"
-application.register("hello", HelloController)
+import HomepageController from "./homepage_controller"
+application.register("homepage", HomepageController)
 
 import ImportsController from "./imports_controller"
 application.register("imports", ImportsController)
