@@ -23,7 +23,7 @@ module Affiliates
       #
       # @return [Result] the result object tracking import stats and errors
       def call
-        process_rows(parse_file)
+        process_rows(parsed_csv)
         result
       rescue *HANDLED_ERRORS => error
         handle_known_error(error)
@@ -33,15 +33,14 @@ module Affiliates
 
       private
 
-      # @return [CSV::Table] parsed rows from the file
-      def parse_file
+      # Parses the CSV file using the custom parser
+      def parsed_csv
         Parser.new(file).call
       end
 
       # Enqueues each row to a Sidekiq worker for background processing.
       #
       # @param rows [CSV::Table] parsed rows from the CSV file
-      # @return [void]
       def process_rows(rows)
         rows.each_with_index do |raw_row, index|
           RowImportJob.perform_async(
@@ -71,14 +70,15 @@ module Affiliates
       # @param error [StandardError]
       # @return [Result]
       def handle_unexpected_error(error)
-        Rails.logger.error(message: 'Affiliates import error', error: error.message)
+        Rails.logger.error(
+          message: 'Affiliates import orchestrator crash',
+          error: error.message,
+          backtrace: error.backtrace.take(10)
+        )
         result.add_error("Unexpected import error: #{error.message}")
         result
       end
 
-      # @return [IO] The file object being imported
-      # @return [Result] The import result tracker
-      # @return [ImportAudit] The associated audit record
       attr_reader :file, :result, :audit
     end
   end

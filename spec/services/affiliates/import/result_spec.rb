@@ -71,8 +71,8 @@ RSpec.describe Affiliates::Import::Result do
 
   describe '#success?' do
     context 'when there are no errors' do
-      it 'returns true' do
-        expect(result.success?).to be true
+      it 'returns false if no rows were processed' do
+        expect(result.success?).to be false
       end
     end
 
