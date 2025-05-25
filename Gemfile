@@ -39,6 +39,9 @@ gem 'sidekiq', '~> 7.1', '>= 7.1.2'
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# Pagination
+gem 'kaminari', '~> 1.2', '>= 1.2.2'
+
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
