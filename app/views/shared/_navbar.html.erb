@@ -1,8 +1,8 @@
 <!-- app/views/shared/_navbar.html.erb -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top" data-controller="navbar notifications">
-  <div class="container">
-    <!-- Logo -->
-    <a class="navbar-brand d-flex align-items-center" href="/">
+  <div class="container-fluid px-4">
+    <!-- Logo - Far Left -->
+    <a class="navbar-brand d-flex align-items-center me-4" href="/">
       <%= image_tag "logo.svg", alt: "Importful Logo", class: "me-2", height: "30" %>
     </a>
 
@@ -13,18 +13,26 @@
 
     <!-- Navbar content -->
     <div class="collapse navbar-collapse" id="navbarContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-        </li>
-        <li class="nav-item">
-        </li>
-      </ul>
+      <!-- Empty space to push everything to the right -->
+      <div class="navbar-nav me-auto"></div>
 
-      <!-- Right side items -->
-      <div class="d-flex align-items-center">
+      <!-- Right side items - Dashboard, Import, Notifications, User -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Dashboard Button -->
+        <%= link_to dashboard_index_path, class: "btn btn-outline-primary d-flex align-items-center #{'btn-primary text-white' if current_page?(dashboard_index_path) || current_page?(dashboard_affiliates_path)}" do %>
+        <i class="bi bi-speedometer2 me-2"></i>
+        Dashboard
+        <% end %>
+
+        <!-- Import Button -->
+        <%= link_to "/imports/new", class: "btn btn-outline-secondary d-flex align-items-center" do %>
+        <i class="bi bi-upload me-2"></i>
+        Import
+        <% end %>
+
         <!-- Notification bell -->
-        <div class="dropdown me-3" data-notifications-target="bellContainer">
-          <button class="btn btn-link text-dark position-relative p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-action="click->notifications#markAllAsRead">
+        <div class="dropdown" data-notifications-target="bellContainer">
+          <button class="btn btn-link text-dark position-relative p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-action="click->notifications#markAllAsRead">
             <i class="bi bi-bell fs-5"></i>
             <!-- Notification badge -->
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" data-notifications-target="badge" style="display: none;">
@@ -60,15 +68,19 @@
 
         <!-- User profile dropdown -->
         <div class="dropdown">
-          <button class="btn btn-outline-secondary border-0 rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi bi-person"></i>
+          <button class="btn btn-outline-secondary border-0 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person fs-5"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
             <li>
-              <h6 class="dropdown-header">User Menu</h6>
+              <h6 class="dropdown-header">
+                <i class="bi bi-person-circle me-2"></i>
+                User Menu
+              </h6>
             </li>
             <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
             <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-palette me-2"></i>Preferences</a></li>
             <li>
               <hr class="dropdown-divider">
             </li>
@@ -79,3 +91,15 @@
     </div>
   </div>
 </nav>
+
+<style>
+  .navbar-brand:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
+  }
+</style>

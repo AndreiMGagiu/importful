@@ -1,0 +1,236 @@
+// Homepage Styles for Importful
+// Modern UI/UX styles for the landing page
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.min-vh-75 {
+  min-height: 75vh;
+}
+
+.text-white-75 {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.floating-card {
+  animation: float 6s ease-in-out infinite;
+  transform: translateY(0px);
+}
+
+.floating-stats {
+  animation: float 6s ease-in-out infinite reverse;
+  transform: translateY(0px);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+.step-number {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+.hero-visual {
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    z-index: -1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 193, 7, 0.2);
+    border-radius: 50%;
+    z-index: -1;
+  }
+}
+
+// Additional homepage enhancements
+.hero-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.btn {
+  &:hover {
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+  }
+}
+
+// Animated Badge Styles
+.hero-badge {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  animation: slideInDown 1s ease-out, pulse 3s ease-in-out infinite 2s;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+  .badge-icon {
+    animation: spin 2s linear infinite;
+  }
+}
+
+@keyframes slideInDown {
+  0% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Hero content animations
+.hero-title {
+  animation: fadeInUp 1.2s ease-out 0.3s both;
+}
+
+.hero-subtitle {
+  animation: fadeInUp 1.2s ease-out 0.6s both;
+}
+
+.hero-buttons {
+  animation: fadeInUp 1.2s ease-out 0.9s both;
+}
+
+.hero-trust {
+  animation: fadeInUp 1.2s ease-out 1.2s both;
+}
+
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Glowing effect for the badge
+.hero-badge {
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0;
+    animation: glow 3s ease-in-out infinite 3s;
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .hero-visual {
+    &::before,
+    &::after {
+      display: none;
+    }
+  }
+
+  .floating-card,
+  .floating-stats {
+    animation: none;
+  }
+
+  .display-4 {
+    font-size: 2.5rem;
+  }
+
+  .display-5 {
+    font-size: 2rem;
+  }
+
+  .hero-badge {
+    .badge-icon {
+      animation: none;
+    }
+  }
+}
+
+// Text gradient effect
+.text-gradient {
+  background: linear-gradient(45deg, #ffd700, #ffed4e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -1,0 +1,256 @@
+<% content_for :title, "Importful - The Future of Affiliate Data Import" %>
+
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+  <div class="container py-5">
+    <div class="row align-items-center min-vh-75">
+      <div class="col-lg-6">
+        <div class="hero-content">
+          <div class="badge hero-badge text-white mb-3 px-3 py-2 fw-semibold">
+            <i class="bi bi-lightning-charge me-2 badge-icon text-warning"></i>
+            The Future of Data Import
+          </div>
+          <h1 class="display-4 fw-bold mb-4 hero-title">
+            Transform Your
+            <span class="text-gradient">Affiliate Data</span>
+            with Intelligent CSV Import
+          </h1>
+          <p class="lead mb-4 text-white-75 hero-subtitle">
+            Importful revolutionizes how businesses handle affiliate marketing data.
+            Upload, validate, and import your CSV files with unprecedented ease and reliability.
+          </p>
+          <div class="d-flex flex-wrap gap-3 mb-4 hero-buttons">
+            <%= link_to dashboard_index_path, class: "btn btn-warning btn-lg px-4 py-3 fw-semibold" do %>
+            <i class="bi bi-speedometer2 me-2"></i>
+            View Dashboard
+            <% end %>
+            <button class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
+              <i class="bi bi-play-circle me-2"></i>
+              Watch Demo
+            </button>
+          </div>
+          <div class="d-flex align-items-center text-white-75 hero-trust">
+            <i class="bi bi-shield-check me-2 text-warning"></i>
+            <small>Trusted by leading affiliate networks worldwide</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="hero-visual position-relative">
+          <div class="floating-card bg-white rounded-4 shadow-lg p-4 mb-4">
+            <div class="d-flex align-items-center mb-3">
+              <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-file-earmark-spreadsheet text-success"></i>
+              </div>
+              <div>
+                <h6 class="mb-0 text-dark">affiliates_data.csv</h6>
+                <small class="text-muted">198,331 records processed</small>
+              </div>
+            </div>
+            <div class="progress mb-2" style="height: 8px;">
+              <div class="progress-bar bg-success" style="width: 100%"></div>
+            </div>
+            <small class="text-success">
+              <i class="bi bi-check-circle me-1"></i>
+              Import completed successfully
+            </small>
+          </div>
+
+          <div class="floating-stats bg-white rounded-4 shadow-lg p-4">
+            <div class="row text-center">
+              <div class="col-4">
+                <h4 class="fw-bold text-primary mb-1"><%= number_with_delimiter(@stats[:total_affiliates]) %></h4>
+                <small class="text-muted">Affiliates</small>
+              </div>
+              <div class="col-4">
+                <h4 class="fw-bold text-success mb-1"><%= number_with_delimiter(@stats[:total_merchants]) %></h4>
+                <small class="text-muted">Merchants</small>
+              </div>
+              <div class="col-4">
+                <h4 class="fw-bold text-warning mb-1">$<%= number_with_delimiter(@stats[:total_commissions], precision: 0) %></h4>
+                <small class="text-muted">Revenue</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+  <div class="container py-5">
+    <div class="row mb-5">
+      <div class="col-lg-8 mx-auto text-center">
+        <h2 class="display-5 fw-bold mb-3">Why Choose Importful?</h2>
+        <p class="lead text-muted">
+          Built specifically for affiliate marketing professionals who demand reliability,
+          speed, and intelligent data processing.
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="feature-card h-100 bg-white rounded-4 shadow-sm p-4 border-0">
+          <div class="feature-icon bg-primary bg-opacity-10 rounded-circle p-3 mb-4 d-inline-flex">
+            <i class="bi bi-lightning-charge fs-3 text-primary"></i>
+          </div>
+          <h4 class="fw-bold mb-3">Lightning Fast Processing</h4>
+          <p class="text-muted mb-4">
+            Process hundreds of thousands of records in seconds. Our optimized engine
+            handles large CSV files without breaking a sweat.
+          </p>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Handles 500k+ records
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Memory efficient processing
+            </li>
+            <li>
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Real-time progress tracking
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="feature-card h-100 bg-white rounded-4 shadow-sm p-4 border-0">
+          <div class="feature-icon bg-success bg-opacity-10 rounded-circle p-3 mb-4 d-inline-flex">
+            <i class="bi bi-shield-check fs-3 text-success"></i>
+          </div>
+          <h4 class="fw-bold mb-3">Intelligent Validation</h4>
+          <p class="text-muted mb-4">
+            Smart data cleaning and validation ensures your imports are always accurate.
+            Handles formatting inconsistencies automatically.
+          </p>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Auto-format emails & URLs
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Duplicate detection
+            </li>
+            <li>
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Error reporting & fixes
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="feature-card h-100 bg-white rounded-4 shadow-sm p-4 border-0">
+          <div class="feature-icon bg-warning bg-opacity-10 rounded-circle p-3 mb-4 d-inline-flex">
+            <i class="bi bi-graph-up fs-3 text-warning"></i>
+          </div>
+          <h4 class="fw-bold mb-3">Powerful Analytics</h4>
+          <p class="text-muted mb-4">
+            Get instant insights into your affiliate data with comprehensive dashboards
+            and real-time analytics.
+          </p>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Real-time dashboards
+            </li>
+            <li class="mb-2">
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Commission tracking
+            </li>
+            <li>
+              <i class="bi bi-check-circle text-success me-2"></i>
+              Performance metrics
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+  <div class="container py-5">
+    <div class="row mb-5">
+      <div class="col-lg-8 mx-auto text-center">
+        <h2 class="display-5 fw-bold mb-3">How It Works</h2>
+        <p class="lead text-muted">
+          Three simple steps to transform your affiliate data
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="text-center">
+          <div class="step-number bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+            <span class="fs-3 fw-bold">1</span>
+          </div>
+          <h4 class="fw-bold mb-3">Upload Your CSV</h4>
+          <p class="text-muted">
+            Simply drag and drop your affiliate CSV file. We support all common formats
+            and delimiters automatically.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="text-center">
+          <div class="step-number bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+            <span class="fs-3 fw-bold">2</span>
+          </div>
+          <h4 class="fw-bold mb-3">Validate & Clean</h4>
+          <p class="text-muted">
+            Our intelligent engine validates, cleans, and formats your data automatically.
+            Review any issues before import.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="text-center">
+          <div class="step-number bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+            <span class="fs-3 fw-bold">3</span>
+          </div>
+          <h4 class="fw-bold mb-3">Analyze & Manage</h4>
+          <p class="text-muted">
+            Access your imported data through powerful dashboards with real-time analytics
+            and management tools.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-dark text-white">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <h2 class="display-5 fw-bold mb-3">Ready to Transform Your Data?</h2>
+        <p class="lead mb-4 text-white-75">
+          Join thousands of affiliate marketers who trust Importful with their data imports.
+        </p>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <%= link_to new_import_path, class: "btn btn-warning btn-lg px-5 py-3 fw-semibold" do %>
+          <i class="bi bi-rocket-takeoff me-2"></i>
+          Get Started Now
+          <% end %>
+          <button class="btn btn-outline-light btn-lg px-5 py-3 fw-semibold">
+            <i class="bi bi-telephone me-2"></i>
+            Contact Sales
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
