@@ -3,7 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Affiliates::GeneratePresignedUrl, type: :service do
-  subject(:service) { described_class.new(filename: filename, content_type: content_type).call }
+  subject(:service) do
+    with_aws_env do
+      described_class.new(filename: filename, content_type: content_type).call
+    end
+  end
 
   let(:filename) { 'test.csv' }
   let(:content_type) { 'text/csv' }
@@ -46,7 +50,9 @@ RSpec.describe Affiliates::GeneratePresignedUrl, type: :service do
 
       it 'raises an AWS ServiceError' do
         expect do
-          service
+          with_aws_env do
+            described_class.new(filename: filename, content_type: content_type).call
+          end
         end.to raise_error(Aws::Errors::ServiceError)
       end
     end
@@ -58,7 +64,9 @@ RSpec.describe Affiliates::GeneratePresignedUrl, type: :service do
 
       it 'raises a RecordInvalid error' do
         expect do
-          service
+          with_aws_env do
+            described_class.new(filename: filename, content_type: content_type).call
+          end
         end.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
