@@ -87,5 +87,6 @@ group :development do
 end
 
 group :test do
+  gem 'climate_control', '~> 1.2'
   gem 'webmock'
 end
