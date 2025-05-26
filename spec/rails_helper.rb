@@ -11,6 +11,7 @@ require 'rspec/rails'
 require 'webmock/rspec'
 
 WebMock.disable_net_connect!(allow_localhost: true)
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -38,7 +39,7 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
-
+  config.include EnvHelper
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
     Rails.root.join('spec/fixtures')
