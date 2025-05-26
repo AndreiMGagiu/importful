@@ -231,12 +231,46 @@ export default class extends Controller {
         successModal.querySelector(".modal-title") ||
         successModal.querySelector("h3");
       if (modalTitle) {
-        modalTitle.textContent = "Upload Successful!";
+        modalTitle.innerHTML = `
+        <i class="bi bi-check-circle-fill text-success me-2"></i>
+        Upload Complete!
+      `;
       }
 
       const modalDescription = successModal.querySelector("p.text-muted");
       if (modalDescription) {
-        modalDescription.textContent = `Your file "${fileName}" has been uploaded successfully and will be processed shortly. We'll notify you when processing is complete.`;
+        modalDescription.innerHTML = `
+        <div class="d-flex align-items-center mb-3">
+          <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+            <span class="visually-hidden">Processing...</span>
+          </div>
+          <strong class="text-primary">Processing "${fileName}"</strong>
+        </div>
+        <p class="mb-3">
+          Great! Your file is being processed in the background. This usually takes just a few minutes, 
+          and you're free to continue working.
+        </p>
+        <div class="alert alert-info border-0 bg-light mb-3">
+          <div class="d-flex align-items-start">
+            <i class="bi bi-info-circle text-info me-2 mt-1"></i>
+            <div>
+              <strong>What happens next?</strong>
+              <ul class="mb-0 mt-1">
+                <li>We'll validate and import your data</li>
+                <li>You'll get notified of any issues</li>
+                <li>Results will appear in your dashboard</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <p class="mb-0">
+          <i class="bi bi-graph-up text-success me-1"></i>
+          Track progress in your 
+          <a href="/dashboard/import_audits" class="text-decoration-none fw-semibold">
+            Import Dashboard <i class="bi bi-arrow-right"></i>
+          </a>
+        </p>
+      `;
       }
 
       const statsCard = successModal.querySelector(".card");
@@ -281,13 +315,31 @@ export default class extends Controller {
         });
       }
     } else {
-      alert(
-        `Your file "${fileName}" has been uploaded successfully and will be processed shortly. We'll notify you when processing is complete.`
-      );
+      const toast = document.createElement("div");
+      toast.className = "position-fixed top-0 end-0 m-3";
+      toast.style.cssText = "z-index: 9999; min-width: 350px;";
+
+      toast.innerHTML = `
+      <div class="alert alert-success alert-dismissible fade show shadow-lg border-0">
+        <div class="d-flex align-items-start">
+          <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+          <div class="flex-grow-1">
+            <h6 class="alert-heading mb-1">Upload Successful!</h6>
+            <p class="mb-2"><strong>"${fileName}"</strong> is being processed in the background.</p>
+            <a href="/dashboard/import_audits" class="btn btn-sm btn-outline-success">
+              <i class="bi bi-graph-up me-1"></i>View Progress
+            </a>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      </div>
+    `;
+
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 8000);
       this.resetFileInput();
     }
   }
-
   addUploadNotification(fileName) {
     const notificationsController = this.findNotificationsController();
 

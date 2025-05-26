@@ -5,62 +5,27 @@ export default class extends Controller {
   static targets = ["badge", "count", "list", "emptyState", "bellContainer"];
 
   connect() {
-    // Initialize notifications array
     this.notifications = [];
-
-    // For demo purposes, we can add a sample notification after a delay
-    // This can be removed in production
-    /*
-    setTimeout(() => {
-      this.addNotification({
-        id: 1,
-        title: "Welcome to Importful",
-        message: "Start by uploading your first CSV file.",
-        timestamp: new Date(),
-        read: false,
-        type: "info"
-      });
-    }, 2000);
-    */
-
-    // In a real app, you would set up a subscription to receive notifications
-    // For example, using ActionCable:
-    // this.channel = consumer.subscriptions.create("NotificationsChannel", {
-    //   received: (data) => {
-    //     this.addNotification(data.notification)
-    //   }
-    // })
   }
-
-  disconnect() {
-    // Clean up any subscriptions when the controller disconnects
-    // if (this.channel) {
-    //   this.channel.unsubscribe()
-    // }
-  }
+  disconnect() {}
 
   addNotification(notification) {
-    // Store notification in our array
     this.notifications.push({
       ...notification,
-      // Format the timestamp if it's a Date object
       formattedTime:
         notification.timestamp instanceof Date
           ? this.formatTimestamp(notification.timestamp)
           : notification.timestamp || "Just now",
     });
 
-    // Hide empty state if it's visible
     this.emptyStateTarget.style.display = "none";
 
-    // Create notification element
     const notificationEl = document.createElement("div");
     notificationEl.className = `notification-item p-3 border-bottom ${
       notification.read ? "bg-white" : "bg-light"
     }`;
     notificationEl.dataset.notificationId = notification.id;
 
-    // Set icon based on notification type
     let iconClass = "bi-info-circle";
     let iconColor = "text-primary";
 

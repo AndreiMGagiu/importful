@@ -103,15 +103,48 @@
             </li>
             <% end %>
 
-            <!-- Page Numbers -->
-            <% start_page = [page - 1, 1].max %>
-            <% end_page = [page + 1, total_pages].min %>
+            <!-- Page Numbers with Ellipsis -->
+            <% window = 2 %>
+            <% start_page = [page - window, 2].max %>
+            <% end_page = [page + window, total_pages - 1].min %>
+
+            <!-- First page -->
+            <li class="<%= ['page-item', ('active' if page == 1)].compact.join(' ') %>">
+              <% if page == 1 %>
+              <span class="page-link">1</span>
+              <% else %>
+              <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="1">1</a>
+              <% end %>
+            </li>
+
+            <!-- Left ellipsis -->
+            <% if start_page > 2 %>
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+            <% end %>
+
+            <!-- Middle page range -->
             <% (start_page..end_page).each do |p| %>
-            <li class="page-item <%= 'active' if p == page %>">
+            <li class="<%= ['page-item', ('active' if p == page)].compact.join(' ') %>">
               <% if p == page %>
               <span class="page-link"><%= p %></span>
               <% else %>
               <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="<%= p %>"><%= p %></a>
+              <% end %>
+            </li>
+            <% end %>
+
+            <!-- Right ellipsis -->
+            <% if end_page < total_pages - 1 %>
+            <li class="page-item disabled"><span class="page-link">…</span></li>
+            <% end %>
+
+            <!-- Last page -->
+            <% if total_pages > 1 %>
+            <li class="<%= ['page-item', ('active' if page == total_pages)].compact.join(' ') %>">
+              <% if page == total_pages %>
+              <span class="page-link"><%= total_pages %></span>
+              <% else %>
+              <a class="page-link" href="#" data-action="click->affiliates-table#loadPage" data-page="<%= total_pages %>"><%= total_pages %></a>
               <% end %>
             </li>
             <% end %>
@@ -129,4 +162,5 @@
       </div>
     </div>
   </div>
+
 </div>

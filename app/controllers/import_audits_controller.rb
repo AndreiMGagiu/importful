@@ -10,8 +10,7 @@ class ImportAuditsController < ApplicationController
   # Displays a list of import audits with optional filters and pagination.
   # @return [void]
   def index
-    query = ImportAudits::Filter.new(filter_params)
-    assign_collection(query)
+    assign_collection(filter_query)
     @stats = ImportAudits::Statistics.call
     @filter_params = filter_params
   end
@@ -25,6 +24,10 @@ class ImportAuditsController < ApplicationController
   def show; end
 
   private
+
+  def filter_query
+    ImportAudits::Filter.new(filter_params)
+  end
 
   # Finds the import audit for the `show` action.
   #

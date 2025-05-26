@@ -35,10 +35,10 @@
 
           <!-- CTA Buttons -->
           <div class="hero-buttons mb-5" data-aos="fade-up" data-aos-delay="400">
-            <%= link_to dashboard_path, class: "btn btn-primary-gradient btn-lg me-3 mb-3 cta-primary" do %>
+            <%= link_to 'imports/new', class: "btn btn-primary-gradient btn-lg me-3 mb-3 cta-primary" do %>
             <span class="btn-content">
               <i class="bi bi-speedometer2 me-2"></i>
-              View Dashboard
+              Import Data
             </span>
             <div class="btn-shine"></div>
             <% end %>
@@ -354,7 +354,7 @@
           </p>
 
           <div class="cta-buttons" data-aos="fade-up" data-aos-delay="200">
-            <%= link_to dashboard_path, class: "btn btn-primary-gradient btn-lg me-3 mb-3 cta-primary" do %>
+            <%= link_to '/imports/new', class: "btn btn-primary-gradient btn-lg me-3 mb-3 cta-primary" do %>
             <span class="btn-content">
               <i class="bi bi-rocket-takeoff me-2"></i>
               Get Started Free
