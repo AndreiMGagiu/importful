@@ -48,6 +48,10 @@
                 <span class="badge bg-danger px-2 py-1 small">
                   <i class="bi bi-x-circle me-1"></i>Failed
                 </span>
+                <% elsif @import_audit.status == 'processed_with_errors' %>
+                <span class="badge bg-warning px-2 py-1 small">
+                  <i class="bi bi-exclamation-triangle me-1"></i>Processed with Errors
+                </span>
                 <% else %>
                 <span class="badge bg-secondary px-2 py-1 small">
                   <i class="bi bi-question-circle me-1"></i><%= @import_audit.status.humanize %>
@@ -85,7 +89,7 @@
             </div>
             <% end %>
 
-            <!-- Error Details Section -->
+            <!-- Error Details Section with Pagination -->
             <% if @import_audit.error_details.present? %>
             <div class="col-12">
               <label class="form-label fw-semibold text-muted small">Error Details</label>
@@ -94,34 +98,123 @@
                 <strong class="small">Detailed Error Information:</strong>
                 <div class="mt-2">
                   <% 
-                      # Handle different types of error_details storage
                       error_details = @import_audit.error_details
                       
-                      # If it's already an array, use it directly
                       if error_details.is_a?(Array)
                         parsed_errors = error_details
-                      # If it's a string, try to parse as JSON
                       elsif error_details.is_a?(String)
                         begin
                           parsed_errors = JSON.parse(error_details)
                         rescue JSON::ParserError
-                          # If JSON parsing fails, treat as plain text
                           parsed_errors = [error_details]
                         end
                       else
-                        # Fallback for other types
                         parsed_errors = [error_details.to_s]
                       end
+
+                      # Pagination logic
+                      per_page = 20
+                      current_page = (params[:error_page] || 1).to_i
+                      total_errors = parsed_errors.size
+                      total_pages = (total_errors.to_f / per_page).ceil
+                      start_index = (current_page - 1) * per_page
+                      end_index = [start_index + per_page - 1, total_errors - 1].min
+                      paginated_errors = parsed_errors[start_index..end_index] || []
                     %>
 
-                  <% if parsed_errors.is_a?(Array) %>
-                  <ul class="mb-0 small">
-                    <% parsed_errors.each do |error| %>
-                    <li class="mb-1">
-                      <code class="text-danger small"><%= error %></code>
-                    </li>
+                  <% if parsed_errors.is_a?(Array) && total_errors > 0 %>
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <small class="text-muted">
+                      Showing <%= start_index + 1 %>-<%= end_index + 1 %> of <%= number_with_delimiter(total_errors) %> errors
+                    </small>
+                    <% if total_pages > 1 %>
+                    <small class="text-muted">Page <%= current_page %> of <%= total_pages %></small>
                     <% end %>
-                  </ul>
+                  </div>
+
+                  <!-- Error list -->
+                  <div class="border rounded p-2 bg-light" style="max-height: 400px; overflow-y: auto;">
+                    <ul class="mb-0 small list-unstyled">
+                      <% paginated_errors.each_with_index do |error, index| %>
+                      <li class="mb-2 p-2 bg-white rounded border-start border-danger border-3">
+                        <div class="d-flex justify-content-between align-items-start">
+                          <code class="text-danger small flex-grow-1"><%= error %></code>
+                          <small class="text-muted ms-2">#<%= start_index + index + 1 %></small>
+                        </div>
+                      </li>
+                      <% end %>
+                    </ul>
+                  </div>
+
+                  <!-- Pagination controls -->
+                  <% if total_pages > 1 %>
+                  <div class="d-flex justify-content-center mt-3">
+                    <nav aria-label="Error details pagination">
+                      <ul class="pagination pagination-sm mb-0">
+                        <!-- Previous button -->
+                        <li class="page-item <%= 'disabled' if current_page <= 1 %>">
+                          <%= link_to import_audit_path(@import_audit, error_page: current_page - 1), 
+                                  class: "page-link #{'disabled' if current_page <= 1}" do %>
+                          <i class="bi bi-chevron-left"></i>
+                          <% end %>
+                        </li>
+
+                        <!-- Page numbers -->
+                        <% 
+                              # Show max 5 page numbers around current page
+                              start_page = [1, current_page - 2].max
+                              end_page = [total_pages, current_page + 2].min
+                              
+                              if end_page - start_page < 4
+                                if start_page == 1
+                                  end_page = [total_pages, start_page + 4].min
+                                else
+                                  start_page = [1, end_page - 4].max
+                                end
+                              end
+                            %>
+
+                        <% if start_page > 1 %>
+                        <li class="page-item">
+                          <%= link_to "1", import_audit_path(@import_audit, error_page: 1), class: "page-link" %>
+                        </li>
+                        <% if start_page > 2 %>
+                        <li class="page-item disabled">
+                          <span class="page-link">...</span>
+                        </li>
+                        <% end %>
+                        <% end %>
+
+                        <% (start_page..end_page).each do |page| %>
+                        <li class="page-item <%= 'active' if page == current_page %>">
+                          <%= link_to page, import_audit_path(@import_audit, error_page: page), 
+                                    class: "page-link" %>
+                        </li>
+                        <% end %>
+
+                        <% if end_page < total_pages %>
+                        <% if end_page < total_pages - 1 %>
+                        <li class="page-item disabled">
+                          <span class="page-link">...</span>
+                        </li>
+                        <% end %>
+                        <li class="page-item">
+                          <%= link_to total_pages, import_audit_path(@import_audit, error_page: total_pages), class: "page-link" %>
+                        </li>
+                        <% end %>
+
+                        <!-- Next button -->
+                        <li class="page-item <%= 'disabled' if current_page >= total_pages %>">
+                          <%= link_to import_audit_path(@import_audit, error_page: current_page + 1), 
+                                  class: "page-link #{'disabled' if current_page >= total_pages}" do %>
+                          <i class="bi bi-chevron-right"></i>
+                          <% end %>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                  <% end %>
+
                   <% else %>
                   <pre class="mb-0 small bg-light p-2 rounded"><%= parsed_errors %></pre>
                   <% end %>
@@ -172,7 +265,7 @@
       </div>
 
       <!-- Error Analysis Card (only show if there are errors) -->
-      <% if @import_audit.status == 'failed' && (@import_audit.error_details.present? || @import_audit.error_message.present?) %>
+      <% if (@import_audit.status == 'failed' || @import_audit.status == 'processed_with_errors') && (@import_audit.error_details.present? || @import_audit.error_message.present?) %>
       <div class="card border-0 shadow-sm mt-3">
         <div class="card-header bg-white border-bottom py-2">
           <h6 class="mb-0 fw-semibold text-danger">
@@ -182,9 +275,14 @@
         <div class="card-body p-3">
           <div class="alert alert-danger py-2 mb-3">
             <h6 class="alert-heading small">
-              <i class="bi bi-exclamation-triangle me-2"></i>Import Failed
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <%= @import_audit.status == 'failed' ? 'Import Failed' : 'Import Completed with Errors' %>
             </h6>
-            <p class="mb-0 small">This import encountered errors and could not be completed successfully.</p>
+            <p class="mb-0 small">
+              <%= @import_audit.status == 'failed' ? 
+                  'This import encountered errors and could not be completed successfully.' : 
+                  'This import completed but some rows had errors.' %>
+            </p>
           </div>
 
           <div class="mb-3">

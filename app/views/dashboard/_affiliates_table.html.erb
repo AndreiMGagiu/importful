@@ -2,10 +2,6 @@
   <!-- Results Header -->
   <div class="card-header bg-white border-bottom py-2">
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-1">
-      <h6 class="mb-0 fw-semibold d-flex align-items-center small">
-        <i class="bi bi-people me-2 text-primary"></i>
-        <%= number_with_delimiter(total_count) %> Affiliates Found
-      </h6>
       <div class="text-muted small">
         Showing <%= offset + 1 %>-<%= [offset + per_page, total_count].min %> of <%= number_with_delimiter(total_count) %>
       </div>
