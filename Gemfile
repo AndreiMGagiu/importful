@@ -72,7 +72,7 @@ group :development, :test do
   gem 'rubocop-performance', '~> 1.25', require: false
   gem "rubocop-rails", "~> 2.32", require: false
   gem "rubocop-rspec", "~> 2.24", require: false
-  gem "rspec-rails", "~> 7.1.0"
+  gem "rspec-rails", "~> 8.0.1"
   gem "rspec-github", require: false
   gem "rubocop-thread_safety", "~> 0.5.1", require: false
 
