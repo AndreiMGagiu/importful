@@ -30,8 +30,17 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+# Storage
+gem 'aws-sdk-s3', '~> 1.186', '>= 1.186.1'
+
+# Background jobs
+gem 'sidekiq', '~> 7.1', '>= 7.1.2'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
+
+# Pagination
+gem 'kaminari', '~> 1.2', '>= 1.2.2'
 
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
@@ -50,14 +59,22 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
+  gem 'pry', '~> 0.15.0'
+
+  gem 'dotenv', '~> 3.1', '>= 3.1.7'
+  
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-
+  gem "rubocop-factory_bot", "~> 2.25", require: false
+  gem 'rubocop-performance', '~> 1.25', require: false
+  gem "rubocop-rails", "~> 2.32", require: false
+  gem "rubocop-rspec", "~> 2.24", require: false
   gem "rspec-rails", "~> 7.1.0"
   gem "rspec-github", require: false
+  gem "rubocop-thread_safety", "~> 0.5.1", require: false
 
   gem "factory_bot_rails"
   gem "shoulda-matchers", "~> 6.0"
@@ -67,4 +84,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+end
+
+group :test do
+  gem 'climate_control', '~> 1.2'
+  gem 'webmock'
 end

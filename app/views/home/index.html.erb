@@ -1,0 +1,445 @@
+<% content_for :title, "Importful - The Future of Affiliate Data Import" %>
+
+<!-- Hero Section -->
+<section class="hero-section position-relative overflow-hidden">
+  <!-- Animated Background -->
+  <div class="hero-bg-animation"></div>
+  <div class="hero-particles"></div>
+
+  <div class="container py-5 position-relative">
+    <div class="row align-items-center min-vh-100">
+      <div class="col-lg-6 order-2 order-lg-1">
+        <div class="hero-content">
+          <!-- Animated Badge -->
+          <div class="hero-badge-container mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="hero-badge">
+              <div class="badge-glow"></div>
+              <i class="bi bi-lightning-charge me-2 badge-icon"></i>
+              <span class="badge-text">The Future of Data Import</span>
+              <div class="badge-shimmer"></div>
+            </div>
+          </div>
+
+          <!-- Main Heading -->
+          <h1 class="hero-title mb-4" data-aos="fade-up" data-aos-delay="200">
+            Transform Your
+            <span class="text-gradient-animated">Affiliate Data</span>
+            with Intelligent CSV Import
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="hero-subtitle mb-5" data-aos="fade-up" data-aos-delay="300">
+            Importful revolutionizes how businesses handle affiliate marketing data.
+            Upload, validate, and import your CSV files with unprecedented ease and reliability.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div class="hero-buttons mb-5" data-aos="fade-up" data-aos-delay="400">
+            <%= link_to 'imports/new', class: "btn btn-primary-gradient btn-lg me-3 mb-3 cta-primary" do %>
+            <span class="btn-content">
+              <i class="bi bi-speedometer2 me-2"></i>
+              Import Data
+            </span>
+            <div class="btn-shine"></div>
+            <% end %>
+            <button class="btn btn-outline-glass btn-lg mb-3 cta-secondary" data-bs-toggle="modal" data-bs-target="#demoModal">
+              <i class="bi bi-play-circle me-2"></i>
+              Watch Demo
+            </button>
+          </div>
+
+          <!-- Trust Indicators -->
+          <div class="hero-trust" data-aos="fade-up" data-aos-delay="500">
+            <div class="trust-badge">
+              <i class="bi bi-shield-check me-2"></i>
+              <span>Trusted by 10,000+ affiliate networks worldwide</span>
+            </div>
+            <div class="trust-stats mt-3">
+              <div class="stat-item">
+                <span class="stat-number">500M+</span>
+                <span class="stat-label">Records Processed</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">99.9%</span>
+                <span class="stat-label">Uptime</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">
+                  < 2s</span>
+                    <span class="stat-label">Avg Processing</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 order-1 order-lg-2">
+        <div class="hero-visual" data-aos="fade-left" data-aos-delay="300">
+          <!-- Interactive Dashboard Preview -->
+          <div class="dashboard-preview">
+            <div class="preview-window">
+              <div class="window-header">
+                <div class="window-controls">
+                  <span class="control red"></span>
+                  <span class="control yellow"></span>
+                  <span class="control green"></span>
+                </div>
+                <div class="window-title">importful.com</div>
+              </div>
+
+              <!-- Animated Import Card -->
+              <div class="import-card floating-card">
+                <div class="card-header">
+                  <div class="file-icon">
+                    <i class="bi bi-file-earmark-spreadsheet"></i>
+                  </div>
+                  <div class="file-info">
+                    <h6 class="file-name">affiliates_data.csv</h6>
+                    <span class="file-size">198,331 records</span>
+                  </div>
+                  <div class="status-indicator success">
+                    <i class="bi bi-check-circle"></i>
+                  </div>
+                </div>
+
+                <div class="progress-container">
+                  <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                  </div>
+                  <span class="progress-text">Import completed successfully</span>
+                </div>
+              </div>
+
+              <!-- Animated Stats Cards -->
+              <div class="stats-grid">
+                <div class="stat-card" data-aos="zoom-in" data-aos-delay="600">
+                  <div class="stat-icon primary">
+                    <i class="bi bi-people"></i>
+                  </div>
+                  <div class="stat-value" data-count="<%= @stats[:total_affiliates] %>">0</div>
+                  <div class="stat-label">Affiliates</div>
+                </div>
+
+                <div class="stat-card" data-aos="zoom-in" data-aos-delay="700">
+                  <div class="stat-icon success">
+                    <i class="bi bi-shop"></i>
+                  </div>
+                  <div class="stat-value" data-count="<%= @stats[:total_merchants] %>">0</div>
+                  <div class="stat-label">Merchants</div>
+                </div>
+
+                <div class="stat-card" data-aos="zoom-in" data-aos-delay="800">
+                  <div class="stat-icon warning">
+                    <i class="bi bi-currency-dollar"></i>
+                  </div>
+                  <div class="stat-value" data-count="<%= @stats[:total_commissions].to_i %>">$0</div>
+                  <div class="stat-label">Revenue</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Floating Elements -->
+          <div class="floating-elements">
+            <div class="floating-icon" data-aos="fade-up" data-aos-delay="900">
+              <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <div class="floating-icon" data-aos="fade-up" data-aos-delay="1000">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <div class="floating-icon" data-aos="fade-up" data-aos-delay="1100">
+              <i class="bi bi-lightning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+  <div class="container py-5">
+    <!-- Section Header -->
+    <div class="row mb-5">
+      <div class="col-lg-8 mx-auto text-center">
+        <div class="section-badge mb-4" data-aos="fade-up">
+          <i class="bi bi-stars me-2"></i>
+          Why Choose Importful?
+        </div>
+        <h2 class="section-title mb-4" data-aos="fade-up" data-aos-delay="100">
+          Built for <span class="text-gradient">Performance</span> & <span class="text-gradient">Scale</span>
+        </h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">
+          Enterprise-grade CSV processing designed specifically for affiliate marketing professionals
+          who demand reliability, speed, and intelligent data processing.
+        </p>
+      </div>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="row g-4">
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-card">
+          <div class="feature-icon-container">
+            <div class="feature-icon primary">
+              <i class="bi bi-lightning-charge"></i>
+            </div>
+            <div class="icon-glow primary"></div>
+          </div>
+          <h4 class="feature-title">Lightning Fast Processing</h4>
+          <p class="feature-description">
+            Process hundreds of thousands of records in seconds with our optimized engine
+            that handles massive CSV files without breaking a sweat.
+          </p>
+          <ul class="feature-list">
+            <li><i class="bi bi-check-circle"></i> Handles 500k+ records</li>
+            <li><i class="bi bi-check-circle"></i> Memory efficient processing</li>
+            <li><i class="bi bi-check-circle"></i> Real-time progress tracking</li>
+          </ul>
+          <div class="feature-hover-effect"></div>
+        </div>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-card">
+          <div class="feature-icon-container">
+            <div class="feature-icon success">
+              <i class="bi bi-shield-check"></i>
+            </div>
+            <div class="icon-glow success"></div>
+          </div>
+          <h4 class="feature-title">Intelligent Validation</h4>
+          <p class="feature-description">
+            Smart data cleaning and validation ensures your imports are always accurate.
+            Automatically handles formatting inconsistencies and data anomalies.
+          </p>
+          <ul class="feature-list">
+            <li><i class="bi bi-check-circle"></i> Auto-format emails & URLs</li>
+            <li><i class="bi bi-check-circle"></i> Duplicate detection</li>
+            <li><i class="bi bi-check-circle"></i> Error reporting & fixes</li>
+          </ul>
+          <div class="feature-hover-effect"></div>
+        </div>
+      </div>
+
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-card">
+          <div class="feature-icon-container">
+            <div class="feature-icon warning">
+              <i class="bi bi-graph-up"></i>
+            </div>
+            <div class="icon-glow warning"></div>
+          </div>
+          <h4 class="feature-title">Powerful Analytics</h4>
+          <p class="feature-description">
+            Get instant insights into your affiliate data with comprehensive dashboards,
+            real-time analytics, and advanced reporting capabilities.
+          </p>
+          <ul class="feature-list">
+            <li><i class="bi bi-check-circle"></i> Real-time dashboards</li>
+            <li><i class="bi bi-check-circle"></i> Commission tracking</li>
+            <li><i class="bi bi-check-circle"></i> Performance metrics</li>
+          </ul>
+          <div class="feature-hover-effect"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="workflow-section py-5">
+  <div class="container py-5">
+    <div class="row mb-5">
+      <div class="col-lg-8 mx-auto text-center">
+        <div class="section-badge mb-4" data-aos="fade-up">
+          <i class="bi bi-gear me-2"></i>
+          How It Works
+        </div>
+        <h2 class="section-title mb-4" data-aos="fade-up" data-aos-delay="100">
+          Three Simple Steps to <span class="text-gradient">Transform</span> Your Data
+        </h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="200">
+          Our streamlined process makes CSV importing effortless and error-free
+        </p>
+      </div>
+    </div>
+
+    <div class="workflow-container">
+      <div class="workflow-line"></div>
+
+      <div class="row g-5">
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="workflow-step">
+            <div class="step-number">
+              <span>1</span>
+              <div class="step-pulse"></div>
+            </div>
+            <div class="step-content">
+              <h4 class="step-title">Upload Your CSV</h4>
+              <p class="step-description">
+                Simply drag and drop your affiliate CSV file. We support all common formats
+                and delimiters with automatic detection.
+              </p>
+              <div class="step-features">
+                <span class="feature-tag">Drag & Drop</span>
+                <span class="feature-tag">Auto-detect Format</span>
+                <span class="feature-tag">Secure Upload</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="workflow-step">
+            <div class="step-number">
+              <span>2</span>
+              <div class="step-pulse"></div>
+            </div>
+            <div class="step-content">
+              <h4 class="step-title">Validate & Clean</h4>
+              <p class="step-description">
+                Our intelligent engine validates, cleans, and formats your data automatically.
+                Review any issues before final import.
+              </p>
+              <div class="step-features">
+                <span class="feature-tag">Smart Validation</span>
+                <span class="feature-tag">Auto-clean Data</span>
+                <span class="feature-tag">Error Preview</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="workflow-step">
+            <div class="step-number">
+              <span>3</span>
+              <div class="step-pulse"></div>
+            </div>
+            <div class="step-content">
+              <h4 class="step-title">Analyze & Manage</h4>
+              <p class="step-description">
+                Access your imported data through powerful dashboards with real-time analytics
+                and comprehensive management tools.
+              </p>
+              <div class="step-features">
+                <span class="feature-tag">Live Dashboard</span>
+                <span class="feature-tag">Analytics</span>
+                <span class="feature-tag">Export Tools</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section position-relative overflow-hidden">
+  <div class="cta-bg-animation"></div>
+
+  <div class="container py-5 position-relative">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center">
+        <div class="cta-content">
+          <h2 class="cta-title mb-4" data-aos="fade-up">
+            Ready to <span class="text-gradient-animated">Transform</span> Your Data?
+          </h2>
+          <p class="cta-subtitle mb-5" data-aos="fade-up" data-aos-delay="100">
+            Join thousands of affiliate marketers who trust Importful with their data imports.
+            Start your free trial today and experience the difference.
+          </p>
+
+          <div class="cta-buttons" data-aos="fade-up" data-aos-delay="200">
+            <%= link_to '/imports/new', class: "btn btn-primary-gradient btn-lg me-3 mb-3 cta-primary" do %>
+            <span class="btn-content">
+              <i class="bi bi-rocket-takeoff me-2"></i>
+              Get Started Free
+            </span>
+            <div class="btn-shine"></div>
+            <% end %>
+            <button class="btn btn-outline-glass btn-lg mb-3 cta-secondary" data-bs-toggle="modal" data-bs-target="#contactModal">
+              <i class="bi bi-telephone me-2"></i>
+              Contact Sales
+            </button>
+          </div>
+
+          <div class="cta-trust mt-4" data-aos="fade-up" data-aos-delay="300">
+            <p class="trust-text">
+              <i class="bi bi-shield-check me-2"></i>
+              No credit card required • 14-day free trial • Cancel anytime
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Demo Modal -->
+<div class="modal fade" id="demoModal" tabindex="-1" aria-labelledby="demoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="demoModalLabel">
+          <i class="bi bi-play-circle me-2 text-primary"></i>
+          Product Demo
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div class="ratio ratio-16x9">
+          <div class="d-flex align-items-center justify-content-center bg-light">
+            <div class="text-center">
+              <i class="bi bi-play-circle display-1 text-primary mb-3"></i>
+              <h5>Demo Video Coming Soon</h5>
+              <p class="text-muted">Experience Importful in action</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold" id="contactModalLabel">
+          <i class="bi bi-telephone me-2 text-primary"></i>
+          Contact Sales
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="contactName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="contactName" required>
+          </div>
+          <div class="mb-3">
+            <label for="contactEmail" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="contactEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="contactCompany" class="form-label">Company</label>
+            <input type="text" class="form-control" id="contactCompany">
+          </div>
+          <div class="mb-3">
+            <label for="contactMessage" class="form-label">Message</label>
+            <textarea class="form-control" id="contactMessage" rows="3" placeholder="Tell us about your needs..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary">Send Message</button>
+      </div>
+    </div>
+  </div>
+</div>

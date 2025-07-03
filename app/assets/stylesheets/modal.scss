@@ -1,0 +1,7 @@
+.modal.fade .modal-dialog {
+  transition: transform 0.3s ease-out;
+  transform: scale(0.95);
+}
+.modal.show .modal-dialog {
+  transform: scale(1);
+}

@@ -1,0 +1,25 @@
+.upload-area {
+  transition: all 0.3s ease;
+  border-color: #dee2e6;
+}
+
+.upload-area:hover,
+.upload-area.border-primary {
+  border-color: var(--bs-primary) !important;
+  background-color: rgba(var(--bs-primary-rgb), 0.05) !important;
+}
+
+.upload-icon-container {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(var(--bs-primary-rgb), 0.1);
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover .upload-icon-container {
+  transform: translateY(-5px);
+}

@@ -1,0 +1,104 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top" data-controller="navbar notifications">
+  <div class="container-fluid px-4">
+    <!-- Logo - Far Left -->
+    <a class="navbar-brand d-flex align-items-center me-4" href="/">
+      <%= image_tag "logo.svg", alt: "Importful Logo", class: "me-2", height: "30" %>
+    </a>
+
+    <!-- Mobile menu button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navbar content -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <!-- Empty space to push everything to the right -->
+      <div class="navbar-nav me-auto"></div>
+
+      <!-- Right side items - Dashboard, Import, Notifications, User -->
+      <div class="d-flex align-items-center gap-3">
+        <!-- Dashboard Button -->
+        <%= link_to dashboard_path, class: "btn btn-outline-primary d-flex align-items-center #{'btn-primary text-white' if current_page?(dashboard_path) || current_page?(dashboard_affiliates_path)}" do %>
+        <i class="bi bi-speedometer2 me-2"></i>
+        Dashboard
+        <% end %>
+
+        <!-- Import Button -->
+        <%= link_to "/imports/new", class: "btn btn-outline-secondary d-flex align-items-center" do %>
+        <i class="bi bi-upload me-2"></i>
+        Import
+        <% end %>
+
+        <!-- Notification bell -->
+        <div class="dropdown" data-notifications-target="bellContainer">
+          <button class="btn btn-link text-dark position-relative p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-action="click->notifications#markAllAsRead">
+            <i class="bi bi-bell fs-5"></i>
+            <!-- Notification badge -->
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" data-notifications-target="badge" style="display: none;">
+              <span data-notifications-target="count">0</span>
+              <span class="visually-hidden">unread notifications</span>
+            </span>
+          </button>
+
+          <!-- Notification dropdown -->
+          <div class="dropdown-menu dropdown-menu-end shadow-sm border-0 p-0" style="width: 320px; max-height: 400px; overflow-y: auto;">
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+              <h6 class="mb-0 fw-semibold">Notifications</h6>
+              <button class="btn btn-sm btn-link text-decoration-none p-0" data-action="notifications#clearAll">Clear all</button>
+            </div>
+
+            <!-- Notifications list -->
+            <div data-notifications-target="list">
+              <!-- Empty state -->
+              <div class="p-4 text-center text-muted" data-notifications-target="emptyState">
+                <i class="bi bi-bell-slash fs-3 mb-2 d-block"></i>
+                <p class="mb-0 small">No notifications yet</p>
+              </div>
+
+              <!-- Notification items will be inserted here by the controller -->
+            </div>
+
+            <!-- View all link -->
+            <div class="p-2 border-top text-center">
+              <a href="#" class="btn btn-link btn-sm text-decoration-none">View all notifications</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- User profile dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary border-0 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person fs-5"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li>
+              <h6 class="dropdown-header">
+                <i class="bi bi-person-circle me-2"></i>
+                User Menu
+              </h6>
+            </li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-palette me-2"></i>Preferences</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .navbar-brand:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
+  }
+</style>

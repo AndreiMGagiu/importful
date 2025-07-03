@@ -1,2 +1,14 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
+@import "bootstrap/scss/bootstrap";
+@import "bootstrap-icons/font/bootstrap-icons";
+
+// Custom stylesheets
+@import "homepage";
+@import "homepage_animations";
+@import "notifications";
+@import "csv_upload";
+@import "buttons";
+@import "card";
+@import "accordion";
+@import "progress_bar";
+@import "modal";
+@import "navbar";
